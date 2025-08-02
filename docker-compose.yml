@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  web:
+    build: .
+    container_name: flask_app
+    expose:
+      - "8000"
+    env_file:
+      - .env
+    restart: always
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx_proxy
+    ports:
+      - "80:80"
+      - "443:443"
+      - "465:465"
+      - "587:587"
+      - "993:993"
+      - "110:110"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+    depends_on:
+      - web
+    restart: always
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
