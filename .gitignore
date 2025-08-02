@@ -6,31 +6,37 @@ __pycache__/
 # C extensions
 *.so
 
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
+# Flask instance folder (stores config, uploads, etc.)
+instance/
+*.db
+*.sqlite3
+
+# Flask cache / logs
+*.log
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+
+# Environment variables and secret config
+.env
+.env.*
 
 # PyInstaller
-# Usually contains the output of `pyinstaller`
-# e.g., `dist/`, `build/`, and `.spec` files
-*.manifest
 *.spec
 
-# Installer logs
+# Build artifacts
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+*.manifest
+
+# Python packaging
+.Python
 pip-log.txt
 pip-delete-this-directory.txt
 
@@ -38,6 +44,7 @@ pip-delete-this-directory.txt
 htmlcov/
 .tox/
 .nox/
+.pytest_cache/
 .coverage
 .coverage.*
 .cache
@@ -45,50 +52,21 @@ nosetests.xml
 coverage.xml
 *.cover
 .hypothesis/
-.pytest_cache/
 
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
-# Pytype
-.pytype/
-
-# Cython debug symbols
-cython_debug/
-
-# PyCharm / VSCode
-.idea/
+# IDE and editor folders
 .vscode/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# dotenv
-.env
-.env.*
-
-# virtualenv
-venv/
-ENV/
-env/
-.venv/
-
-# VS Code settings
+.idea/
 .settings/
 
-# Mac system files
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Type checkers
+.mypy_cache/
+.pytype/
+.pyre/
+dmypy.json
+
+# macOS and system files
 .DS_Store
-
-# Log files
-*.log
-
-# SQLite database
-*.sqlite3
-
-# Local test config
-local_settings.py
+Thumbs.db
