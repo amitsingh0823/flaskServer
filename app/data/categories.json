@@ -1,0 +1,30 @@
+[
+  {
+    "name": "V-band Clamps",
+    "description": "High Performance after market clamps for your vehicle at factory prices",
+    "folder": "v_band",
+    "image": "3.5_inch.jpg",
+    "count": 3
+  },
+  {
+    "name": "T-Bolt Clamps",
+    "description": "T-bolt clamps are used to create strong, reliable connections in various applications, especially where high pressure, vibration, or temperature fluctuations are present. They are commonly found in automotive, marine, industrial, and aerospace applications, often used to secure hoses and pipes",
+    "folder": "t_bolt_clamps",
+    "image": "t-bolt_clamps.png",
+    "count": 0
+  },
+  {
+    "name": "Heat Shield Brackets",
+    "description": "The Exhaust Shield Bracket is used to hold the shield of the Exhaust setup tightly to reduce heat. It is designed to hold the components securely in place and bolted to the Radiator, which helps to ensure safe and efficient operation.",
+    "folder": "heat_shield_bracket",
+    "image": "FM6307.jpg",
+    "count": 0
+  },
+  {
+    "name": "Air Tank Straps",
+    "description": "Secure Mounting: The primary function of fuel tank straps is to securely mount the fuel tank in the vehicle, preventing shifting, and movement, and reducing the risk of tank damage, dents, leaks, or other safety hazards.",
+    "folder": "air_tank_straps",
+    "image": "strap_coverimage.png",
+    "count": 0
+  }
+]

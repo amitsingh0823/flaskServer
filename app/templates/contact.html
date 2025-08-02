@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - QualClamps</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        .contact-container {
+            display: flex;
+            flex-wrap: wrap;
+            max-width: 1000px;
+            margin: 60px auto;
+            gap: 20px;
+            padding: 0 20px;
+        }
+        .contact-box, .form-box {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            flex: 1 1 450px;
+        }
+        .contact-box {
+            background: #007bff;
+            color: white;
+        }
+        .contact-box h3, .form-box h3 {
+            margin-top: 0;
+        }
+        .contact-box p, .contact-box a {
+            color: white;
+            line-height: 1.6;
+        }
+        .form-box input, .form-box textarea, .form-box select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        .form-box button {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .form-box button:hover {
+            background: #0056b3;
+        }
+        .form-box label {
+            font-weight: 500;
+        }
+        .form-box .checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+            text-align: left;
+            flex-wrap: wrap;
+        }
+        .form-box .checkbox input {
+            margin-right: 8px;
+        }
+        .form-box .checkbox label {
+            font-weight: 400;
+            line-height: 1.4;
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+
+    <section style="text-align: center; padding-top: 40px;">
+        <h2>Contact Us</h2>
+        <p>Have questions about our products? Our team of experts is ready to assist you.</p>
+    </section>
+
+    <div class="contact-container">
+        <div class="contact-box">
+            <h3>Get In Touch</h3>
+            <p><strong>Contact Information</strong></p>
+            <p>Plot No. 05, Dabua - Pali Road<br>
+               Ram Singh Road Bajari<br>
+               Faridabad - 121001 (HR.), India</p>
+            <p><strong>Phone:</strong> +91 8076050909</p>
+            <p><strong>Email:</strong> sales@qualclamps.com<br>
+               custom@qualclamps.com</p>
+            <div style="background-color: #fff3cd; border: 1px solid #ffeeba; border-radius: 6px; padding: 12px; margin: 15px 0; text-align: left;">
+                <p style="margin: 0; color: #856404; font-size: 0.85em;">
+                    <strong>⚠️ Important Notice:</strong> We have an automated spam filtering system that differentiates between important and irrelevant emails. Please ensure your email contains relevant business inquiries. Non-important emails will be automatically deleted or flagged and we won't be able to help you.
+                </p>
+            </div>
+            <p><strong>Business Hours:</strong><br>
+               Monday - Friday: 8:00 AM - 5:00 PM<br>
+               Saturday - Sunday: Closed</p>
+        </div>
+
+        <div class="form-box">
+            <form action="{{ url_for('contact') }}" method="POST">
+                <h3>Send Us a Message</h3>
+                
+                <div style="background-color: #fff3cd; border: 1px solid #ffeeba; border-radius: 6px; padding: 12px; margin-bottom: 20px;">
+                    <p style="margin: 0; color: #856404; font-size: 0.85em;">
+                        <strong>⚠️ Important Notice:</strong> We have an automated spam filtering system that differentiates between important and irrelevant emails. Please ensure your message contains relevant business inquiries. Non-important emails will be automatically deleted or flagged and we won't be able to help you.
+                    </p>
+                </div>
+                
+                <label>Full Name*</label>
+                <input type="text" name="name" required>
+
+                <label>Company Name</label>
+                <input type="text" name="company">
+
+                <label>Email Address*</label>
+                <input type="email" name="email" required>
+
+                <label>Phone Number</label>
+                <input type="text" name="phone">
+
+                <label>Inquiry Type*</label>
+                <select name="inquiry" required>
+                    <option value="">Please select</option>
+                    <option value="Product Inquiry">Product Inquiry</option>
+                    <option value="Order Status">Order Status</option>
+                    <option value="Custom Requirement">Custom Requirement</option>
+                </select>
+
+                <label>Message*</label>
+                <textarea name="message" rows="5" required></textarea>
+
+                <div class="checkbox">
+                    <input type="checkbox" id="privacy-agreement" required>
+                    <label for="privacy-agreement">I agree to the processing of my personal data in accordance with the <a href="#" target="_blank">Privacy Policy</a>.</label>
+                </div>
+
+                <button type="submit">Send Message</button>
+            </form>
+        </div>
+    </div>
+    {% include 'footer.html' %}
+</body>
+</html>

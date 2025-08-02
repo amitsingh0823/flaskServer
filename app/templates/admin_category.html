@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add Category | Admin - QualClamps</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <style>
+    body {
+      background-color: #f9f9f9;
+      font-family: "Segoe UI", sans-serif;
+    }
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background-color: #343a40;
+      color: #fff;
+    }
+    .logout-link {
+      font-size: 0.9rem;
+      text-decoration: none;
+      color: #ffc107;
+    }
+    .logout-link:hover {
+      text-decoration: underline;
+    }
+    .admin-form {
+      max-width: 600px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .admin-form form {
+      display: flex;
+      flex-direction: column;
+    }
+    .admin-form label {
+      margin: 0.5rem 0 0.2rem;
+      font-weight: bold;
+    }
+    .admin-form input,
+    .admin-form textarea,
+    .admin-form button {
+      padding: 0.6rem;
+      margin-bottom: 1rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    .admin-form button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .admin-form button:hover {
+      background-color: #0056b3;
+    }
+    .flash-messages {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 1rem;
+      color: #28a745;
+    }
+    .image-preview {
+      max-width: 100%;
+      margin-top: -0.5rem;
+      margin-bottom: 1rem;
+      display: none;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+  </style>
+  <script>
+    function showPreview(event) {
+      const [file] = event.target.files;
+      if (file) {
+        const preview = document.getElementById('preview');
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = 'block';
+      }
+    }
+  </script>
+</head>
+<body>
+  <header class="admin-header">
+    <h2>Admin Panel - Add New Category</h2>
+    <a class="logout-link" href="{{ url_for('admin_logout') }}">Logout</a>
+  </header>
+
+  <section class="admin-form">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class="flash-messages">
+          {% for msg in messages %}
+            <li>{{ msg }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" enctype="multipart/form-data">
+      <label for="name">Category Name</label>
+      <input type="text" name="name" id="name" required />
+
+      <label for="description">Description</label>
+      <textarea name="description" id="description" required></textarea>
+
+      <label for="folder">Folder Name</label>
+      <input type="text" name="folder" id="folder" placeholder="e.g., v_band" required />
+
+      <label for="image">Category Image</label>
+      <input type="file" name="image" id="image" accept="image/*" onchange="showPreview(event)" required />
+
+      <img id="preview" class="image-preview" alt="Image Preview">
+
+      <button type="submit">Create Category</button>
+    </form>
+    <hr>
+  <section class="admin-form">
+    <h2>Existing Categories</h2>
+    {% if categories %}
+      <ul style="list-style: none; padding-left: 0;">
+        {% for cat in categories %}
+        <li style="margin-bottom: 1rem; border: 1px solid #ccc; padding: 1rem; border-radius: 6px;">
+          <strong>{{ cat.name }}</strong><br>
+          <em>{{ cat.description }}</em><br>
+          <small>Folder: {{ cat.folder }} | Products: {{ cat.count }}</small><br>
+          <img src="{{ url_for('static', filename='images/' + cat.image) }}" alt="{{ cat.name }}" style="max-height: 100px; margin-top: 0.5rem;">
+          <div style="margin-top: 0.5rem;">
+            <a href="{{ url_for('manage_category', folder=cat.folder) }}">
+              <button>Manage</button>
+            </a>
+            <a href="{{ url_for('add_product', folder=cat.folder) }}">
+              <button>Add Product</button>
+            </a>
+            <form method="POST" action="{{ url_for('delete_category', folder=cat.folder) }}" style="display:inline;">
+              <button type="submit" style="background: #dc3545; color: white;">Delete</button>
+            </form>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No categories found.</p>
+    {% endif %}
+  </section>
+</section>
+</body>
+</html>

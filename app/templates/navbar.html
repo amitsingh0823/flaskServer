@@ -1,0 +1,30 @@
+<header class="navbar">
+        <div class="logo">
+            <a href="{{ url_for('index') }}" style="text-decoration: none; color: inherit;">
+                Qual<span style="color:blue">Clamps</span> 🔧
+            </a>
+        </div>
+        <nav>
+            <a href="/">Home</a>
+            <a href="{{ url_for('products') }}">Products</a>
+            <a href="#">About</a>
+            <a href="/fabrication">Fabrication</a>
+            <a href="/custom-clamps">Custom Clamps</a>
+            <a href="/contact">Contact</a>
+            <div class="cart-dropdown">
+                <a href="{{ url_for('cart') }}" class="cart-link">
+                    🛒 Cart
+                    {% set cart_count = session.get('cart', {})|length %}
+                    {% if cart_count > 0 %}
+                    <span class="cart-count">{{ cart_count }}</span>
+                    {% endif %}
+                </a>
+                {% if cart_count > 0 %}
+                <div class="cart-dropdown-content">
+                    <a href="{{ url_for('cart') }}">View Cart</a>
+                    <a href="{{ url_for('clear_cart') }}" onclick="return confirm('Are you sure you want to clear your cart?')">Clear Cart</a>
+                </div>
+                {% endif %}
+            </div>
+        </nav>
+    </header>

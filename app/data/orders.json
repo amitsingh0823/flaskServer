@@ -1,0 +1,328 @@
+[
+  {
+    "order_id": "ORD-1753803111",
+    "customer_info": {
+      "name": "Ritesh",
+      "email": "riteshsharma0312199s@gmail.com",
+      "phone": "8076050909",
+      "company": "Saroj Engineering Works",
+      "address": "House number 2617",
+      "city": "Faridabad",
+      "state": "Haryana",
+      "country": "India",
+      "postal_code": "121001",
+      "shipping_method": "air",
+      "payment_method": "upi",
+      "notes": ""
+    },
+    "items": [
+      {
+        "cart_key": "v_band:588-inch-v_band-clamp-sew5i88tbtr-with-ss-nyloc-nut:{}",
+        "product": {
+          "name": "5.88 inch V_band Clamp SEW5I88TBTR with SS Nyloc Nut",
+          "description": "V Band Clamps are used to pull together and connect two circular flanges. The resulting joint is much lighter, easier to fit and strip down for maintenance and requires less installation space when compared to traditional bolted flanges.",
+          "oem": "9615,561.29588,56129588E,56129588,VT10588,VT10588-1,1V0588A02,VT105881,583989503,N23505789,9N1941,99502-0588,VBC-5880,494239160,23505789,23506159,J009615,P206607,40500S,88-506,DNP206607,PPP206607,413828000,04-13828-000,01-14596-000,0114596000,210046-0000,320004,VB-588C,VB588C,HD0843,21215,DCP206607,25174573,11ME241,MI-JACK 33170407,NAVISTAR 390226C91,NAVISTAR 1672105C91,89503K,S-5222,PAI ECL1932,10028003,010028-003,0373010149,10028-3,UV501,250-0931,TECTRAN HV588,491627,22476,543871,8070165,35806",
+          "weight": "0.258",
+          "price": 7.2,
+          "stock": 1000,
+          "image": "5.88_inch_1753629332.jxl",
+          "images": [
+            "5.88_inch_1753629332.jxl",
+            "VT10588_1753629332.JPG"
+          ],
+          "specifications": [],
+          "shipping": {
+            "weight_kg": 0.258,
+            "excluded_countries": [
+              "Pakistan",
+              "China"
+            ],
+            "rate_per_1000km_per_kg": 4,
+            "shipping_discount": 0.1
+          }
+        },
+        "category_folder": "v_band",
+        "quantity": 100,
+        "specifications": {},
+        "spec_details": {},
+        "shipping": {
+          "cost": 2421.9,
+          "country": "Canada",
+          "method": "air"
+        },
+        "base_price": 7.2,
+        "total_spec_modifier": 0.0,
+        "unit_price": 7.2,
+        "base_weight": 0.258,
+        "total_weight_modifier": 0.0,
+        "unit_weight": 0.258,
+        "total_weight": 25.8,
+        "discount_rate": 0.12,
+        "discount_amount": 0.864,
+        "final_unit_price": 6.336,
+        "subtotal": 720.0,
+        "total_discount": 86.4,
+        "final_total": 633.6
+      }
+    ],
+    "subtotal": 3055.5,
+    "shipping_cost": 135.72,
+    "total": 3191.22,
+    "total_weight": 25.8,
+    "payment_info": {
+      "method": "upi",
+      "status": "pending",
+      "amount": 3191.22,
+      "instructions": "Please pay using UPI and send payment screenshot via email.",
+      "upi_id": "qualityclamps@upi",
+      "upi_name": "Quality Clamps"
+    },
+    "status": "pending",
+    "created_at": 1753803111.090812,
+    "created_date": "2025-07-29 21:01:51"
+  },
+  {
+    "order_id": "ORD-1753803289",
+    "customer_info": {
+      "name": "Ritesh",
+      "email": "riteshsharma0312199s@gmail.com",
+      "phone": "8076050909",
+      "company": "Saroj Engineering Works",
+      "address": "House number 2617",
+      "city": "Faridabad",
+      "state": "Haryana",
+      "country": "India",
+      "postal_code": "121001",
+      "shipping_method": "air",
+      "payment_method": "upi",
+      "notes": ""
+    },
+    "order_items": [
+      {
+        "cart_key": "v_band:588-inch-v_band-clamp-sew5i88tbtr-with-ss-nyloc-nut:{}",
+        "product": {
+          "name": "5.88 inch V_band Clamp SEW5I88TBTR with SS Nyloc Nut",
+          "description": "V Band Clamps are used to pull together and connect two circular flanges. The resulting joint is much lighter, easier to fit and strip down for maintenance and requires less installation space when compared to traditional bolted flanges.",
+          "oem": "9615,561.29588,56129588E,56129588,VT10588,VT10588-1,1V0588A02,VT105881,583989503,N23505789,9N1941,99502-0588,VBC-5880,494239160,23505789,23506159,J009615,P206607,40500S,88-506,DNP206607,PPP206607,413828000,04-13828-000,01-14596-000,0114596000,210046-0000,320004,VB-588C,VB588C,HD0843,21215,DCP206607,25174573,11ME241,MI-JACK 33170407,NAVISTAR 390226C91,NAVISTAR 1672105C91,89503K,S-5222,PAI ECL1932,10028003,010028-003,0373010149,10028-3,UV501,250-0931,TECTRAN HV588,491627,22476,543871,8070165,35806",
+          "weight": "0.258",
+          "price": 7.2,
+          "stock": 1000,
+          "image": "5.88_inch_1753629332.jxl",
+          "images": [
+            "5.88_inch_1753629332.jxl",
+            "VT10588_1753629332.JPG"
+          ],
+          "specifications": [],
+          "shipping": {
+            "weight_kg": 0.258,
+            "excluded_countries": [
+              "Pakistan",
+              "China"
+            ],
+            "rate_per_1000km_per_kg": 4,
+            "shipping_discount": 0.1
+          }
+        },
+        "category_folder": "v_band",
+        "quantity": 100,
+        "specifications": {},
+        "spec_details": {},
+        "shipping": {
+          "cost": 2421.9,
+          "country": "Canada",
+          "method": "air"
+        },
+        "base_price": 7.2,
+        "total_spec_modifier": 0.0,
+        "unit_price": 7.2,
+        "base_weight": 0.258,
+        "total_weight_modifier": 0.0,
+        "unit_weight": 0.258,
+        "total_weight": 25.8,
+        "discount_rate": 0.12,
+        "discount_amount": 0.864,
+        "final_unit_price": 6.336,
+        "subtotal": 720.0,
+        "total_discount": 86.4,
+        "final_total": 633.6
+      }
+    ],
+    "subtotal": 3055.5,
+    "shipping_cost": 135.72,
+    "total": 3191.22,
+    "total_weight": 25.8,
+    "payment_info": {
+      "method": "upi",
+      "status": "pending",
+      "amount": 3191.22,
+      "instructions": "Please pay using UPI and send payment screenshot via email.",
+      "upi_id": "qualityclamps@upi",
+      "upi_name": "Quality Clamps"
+    },
+    "status": "pending",
+    "created_at": 1753803289.3461728,
+    "created_date": "2025-07-29 21:04:49"
+  },
+  {
+    "order_id": "ORD-1753803310",
+    "customer_info": {
+      "name": "Ritesh",
+      "email": "riteshsharma0312199s@gmail.com",
+      "phone": "8076050909",
+      "company": "Saroj Engineering Works",
+      "address": "House number 2617",
+      "city": "Faridabad",
+      "state": "Haryana",
+      "country": "Canada",
+      "postal_code": "121001",
+      "shipping_method": "air",
+      "payment_method": "paypal",
+      "notes": ""
+    },
+    "order_items": [
+      {
+        "cart_key": "v_band:588-inch-v_band-clamp-sew5i88tbtr-with-ss-nyloc-nut:{}",
+        "product": {
+          "name": "5.88 inch V_band Clamp SEW5I88TBTR with SS Nyloc Nut",
+          "description": "V Band Clamps are used to pull together and connect two circular flanges. The resulting joint is much lighter, easier to fit and strip down for maintenance and requires less installation space when compared to traditional bolted flanges.",
+          "oem": "9615,561.29588,56129588E,56129588,VT10588,VT10588-1,1V0588A02,VT105881,583989503,N23505789,9N1941,99502-0588,VBC-5880,494239160,23505789,23506159,J009615,P206607,40500S,88-506,DNP206607,PPP206607,413828000,04-13828-000,01-14596-000,0114596000,210046-0000,320004,VB-588C,VB588C,HD0843,21215,DCP206607,25174573,11ME241,MI-JACK 33170407,NAVISTAR 390226C91,NAVISTAR 1672105C91,89503K,S-5222,PAI ECL1932,10028003,010028-003,0373010149,10028-3,UV501,250-0931,TECTRAN HV588,491627,22476,543871,8070165,35806",
+          "weight": "0.258",
+          "price": 7.2,
+          "stock": 1000,
+          "image": "5.88_inch_1753629332.jxl",
+          "images": [
+            "5.88_inch_1753629332.jxl",
+            "VT10588_1753629332.JPG"
+          ],
+          "specifications": [],
+          "shipping": {
+            "weight_kg": 0.258,
+            "excluded_countries": [
+              "Pakistan",
+              "China"
+            ],
+            "rate_per_1000km_per_kg": 4,
+            "shipping_discount": 0.1
+          }
+        },
+        "category_folder": "v_band",
+        "quantity": 100,
+        "specifications": {},
+        "spec_details": {},
+        "shipping": {
+          "cost": 2421.9,
+          "country": "Canada",
+          "method": "air"
+        },
+        "base_price": 7.2,
+        "total_spec_modifier": 0.0,
+        "unit_price": 7.2,
+        "base_weight": 0.258,
+        "total_weight_modifier": 0.0,
+        "unit_weight": 0.258,
+        "total_weight": 25.8,
+        "discount_rate": 0.12,
+        "discount_amount": 0.864,
+        "final_unit_price": 6.336,
+        "subtotal": 720.0,
+        "total_discount": 86.4,
+        "final_total": 633.6
+      }
+    ],
+    "subtotal": 3055.5,
+    "shipping_cost": 2421.9,
+    "total": 5477.4,
+    "total_weight": 25.8,
+    "payment_info": {
+      "method": "paypal",
+      "status": "pending",
+      "amount": 5477.4,
+      "instructions": "You will receive PayPal payment instructions via email.",
+      "paypal_email": "payments@qualityclamps.com"
+    },
+    "status": "pending",
+    "created_at": 1753803310.580705,
+    "created_date": "2025-07-29 21:05:10"
+  },
+  {
+    "order_id": "ORD-1753805413",
+    "customer_info": {
+      "name": "Ritesh Sharma",
+      "email": "riteshsharma@drumclosurecompany.com",
+      "phone": "8076050909",
+      "company": "Saroj",
+      "address": "any",
+      "city": "faridabad",
+      "state": "haryana",
+      "country": "Canada",
+      "postal_code": "121001",
+      "shipping_method": "air",
+      "payment_method": "paypal",
+      "notes": ""
+    },
+    "order_items": [
+      {
+        "cart_key": "v_band:588-inch-v_band-clamp-sew5i88tbtr-with-ss-nyloc-nut:{}",
+        "product": {
+          "name": "5.88 inch V_band Clamp SEW5I88TBTR with SS Nyloc Nut",
+          "description": "V Band Clamps are used to pull together and connect two circular flanges. The resulting joint is much lighter, easier to fit and strip down for maintenance and requires less installation space when compared to traditional bolted flanges.",
+          "oem": "9615,561.29588,56129588E,56129588,VT10588,VT10588-1,1V0588A02,VT105881,583989503,N23505789,9N1941,99502-0588,VBC-5880,494239160,23505789,23506159,J009615,P206607,40500S,88-506,DNP206607,PPP206607,413828000,04-13828-000,01-14596-000,0114596000,210046-0000,320004,VB-588C,VB588C,HD0843,21215,DCP206607,25174573,11ME241,MI-JACK 33170407,NAVISTAR 390226C91,NAVISTAR 1672105C91,89503K,S-5222,PAI ECL1932,10028003,010028-003,0373010149,10028-3,UV501,250-0931,TECTRAN HV588,491627,22476,543871,8070165,35806",
+          "weight": "0.258",
+          "price": 7.2,
+          "stock": 1000,
+          "image": "5.88_inch_1753629332.jxl",
+          "images": [
+            "5.88_inch_1753629332.jxl",
+            "VT10588_1753629332.JPG"
+          ],
+          "specifications": [],
+          "shipping": {
+            "weight_kg": 0.258,
+            "excluded_countries": [
+              "Pakistan",
+              "China"
+            ],
+            "rate_per_1000km_per_kg": 4,
+            "shipping_discount": 0.1
+          }
+        },
+        "category_folder": "v_band",
+        "quantity": 100,
+        "specifications": {},
+        "spec_details": {},
+        "shipping": {
+          "cost": 2421.9,
+          "country": "Canada",
+          "method": "air"
+        },
+        "base_price": 7.2,
+        "total_spec_modifier": 0.0,
+        "unit_price": 7.2,
+        "base_weight": 0.258,
+        "total_weight_modifier": 0.0,
+        "unit_weight": 0.258,
+        "total_weight": 25.8,
+        "discount_rate": 0.12,
+        "discount_amount": 0.864,
+        "final_unit_price": 6.336,
+        "subtotal": 720.0,
+        "total_discount": 86.4,
+        "final_total": 633.6
+      }
+    ],
+    "subtotal": 3055.5,
+    "shipping_cost": 2421.9,
+    "total": 5477.4,
+    "total_weight": 25.8,
+    "payment_info": {
+      "method": "paypal",
+      "status": "pending",
+      "amount": 5477.4,
+      "instructions": "You will receive PayPal payment instructions via email.",
+      "paypal_email": "payments@qualityclamps.com"
+    },
+    "status": "pending",
+    "created_at": 1753805413.77473,
+    "created_date": "2025-07-29 21:40:13"
+  }
+]

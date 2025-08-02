@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fabrication Services | QualClamps</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header class="navbar">
+                <div class="logo">
+            <a href="{{ url_for('index') }}" style="text-decoration: none; color: inherit;">
+                Qual<span style="color:blue">Clamps</span> 🔧
+            </a>
+        </div>
+        <nav>
+            <a href="/">Home</a>
+            <a href="#">Products</a>
+            <a href="#">About</a>
+            <a href="/fabrication">Fabrication</a>
+            <a href="/custom-clamps">Custom Clamps</a>
+            <a href="#">Contact</a>
+        </nav>
+    </header>
+    <main style="padding: 2rem; font-family: sans-serif;">
+        <section style="text-align: center; margin-bottom: 2rem;">
+            <h1>Mining Fabrication Services</h1>
+            <p style="font-size: 1.1rem;">Custom fabrication solutions for mining operations including hoppers, walkways, handrails, and specialized equipment.</p>
+            <button style="padding: 0.75rem 1.5rem; background-color: orange; border: none; color: white; border-radius: 5px; font-size: 1rem;">📞 Get Quote: +91 8070605909</button>
+        </section>
+
+        <section style="display: flex; flex-wrap: wrap; justify-content: space-around; gap: 2rem;">
+            <div style="flex: 1 1 300px; border: 1px solid #ddd; border-radius: 10px; padding: 1rem; text-align: center;">
+                <img src="{{ url_for('static', filename='images/Fabrication/hopper.png') }}" alt="Hopper" style="width:100%; height: auto; border-radius: 8px;">
+                <h3>Assembled Hopper Systems with Walkways</h3>
+                <p>Integrated safety railings and access platforms designed for mining operations. Robust construction and easy maintenance.</p>
+                <button style="margin-top: 1rem; background-color: #007bff; color: white; padding: 0.5rem 1rem; border: none; border-radius: 5px;">Request Quote</button>
+            </div>
+            <div style="flex: 1 1 300px; border: 1px solid #ddd; border-radius: 10px; padding: 1rem; text-align: center;">
+                <img src="{{ url_for('static', filename='images/Fabrication/handrails.jpg') }}" alt="Handrails" style="width:100%; height: auto; border-radius: 8px;">
+                <h3>Industrial Handrail Systems</h3>
+                <p>Safety-compliant railings for platforms and walkways. Powder-coated and available in high-visibility finishes.</p>
+                <button style="margin-top: 1rem; background-color: #007bff; color: white; padding: 0.5rem 1rem; border: none; border-radius: 5px;">Request Quote</button>
+            </div>
+            <div style="flex: 1 1 300px; border: 1px solid #ddd; border-radius: 10px; padding: 1rem; text-align: center;">
+                <img src="{{ url_for('static', filename='images/Fabrication/assembled_hopper_walkway.jpg') }}" alt="Hopper Solutions" style="width:100%; height: auto; border-radius: 8px;">
+                <h3>Mining Hopper Solutions</h3>
+                <p>Engineered for material handling in mining. Includes discharge controls, vibration systems, and optional motor drives.</p>
+                <button style="margin-top: 1rem; background-color: #007bff; color: white; padding: 0.5rem 1rem; border: none; border-radius: 5px;">Request Quote</button>
+            </div>
+        </section>
+
+        <section style="margin-top: 4rem; text-align: center;">
+            <h2>Why Choose Our Fabrication Services</h2>
+            <div style="display: flex; justify-content: center; gap: 3rem; margin-top: 2rem; flex-wrap: wrap;">
+                <div style="max-width: 250px;">
+                    <h4>🔧 Custom Engineering</h4>
+                    <p>Tailored designs to your exact requirements with detailed CAD drawings and specifications.</p>
+                </div>
+                <div style="max-width: 250px;">
+                    <h4>🏗️ Expert Fabrication</h4>
+                    <p>Experienced welding team with years of industrial and structural fabrication expertise.</p>
+                </div>
+                <div style="max-width: 250px;">
+                    <h4>✅ Safety Compliance</h4>
+                    <p>All our builds meet OSHA, MSHA, and global safety standards for maximum reliability.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    {% include 'footer.html' %}
+</body>
+</html>

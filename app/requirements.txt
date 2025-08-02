@@ -1,2 +1,4 @@
-flask
-gunicorn
+python-dotenv
+Flask
+Flask-Mail
+paypalrestsdk

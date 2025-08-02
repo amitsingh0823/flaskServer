@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Quality Clamps</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        .checkout-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .checkout-header {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .checkout-section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #28a745;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        .form-control {
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            padding: 12px;
+            transition: border-color 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+        }
+        .required {
+            color: #dc3545;
+        }
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .order-item:last-child {
+            border-bottom: none;
+        }
+        .item-info {
+            flex: 1;
+        }
+        .item-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .item-specs {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        .item-quantity {
+            margin: 0 20px;
+            color: #6c757d;
+        }
+        .item-price {
+            font-weight: 600;
+            color: #28a745;
+        }
+        .order-summary {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+        .summary-total {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #28a745;
+            border-top: 2px solid #28a745;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+        .shipping-options {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .shipping-option {
+            flex: 1;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .shipping-option:hover {
+            border-color: #28a745;
+        }
+        .shipping-option.selected {
+            border-color: #28a745;
+            background-color: #f8fff9;
+        }
+        .shipping-option.readonly {
+            cursor: default !important;
+            opacity: 0.8;
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+        }
+        .shipping-option.readonly.selected {
+            border-color: #28a745;
+            background-color: #e8f5e8;
+        }
+        .shipping-option.readonly:hover {
+            border-color: #dee2e6 !important;
+            background-color: #f8f9fa !important;
+        }
+        .shipping-option input[type="radio"] {
+            margin-right: 10px;
+        }
+        .payment-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .payment-option {
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        .payment-option:hover {
+            border-color: #28a745;
+        }
+        .payment-option.selected {
+            border-color: #28a745;
+            background-color: #f8fff9;
+        }
+        .payment-option input[type="radio"] {
+            margin-right: 15px;
+        }
+        .payment-info {
+            flex: 1;
+        }
+        .payment-details {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #17a2b8;
+        }
+        .alert {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin: 0;
+        }
+        .alert-info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .place-order-btn {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.3em;
+            font-weight: 600;
+            border-radius: 8px;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+        }
+        .place-order-btn:hover {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            transform: translateY(-2px);
+        }
+        .back-to-cart {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 15px;
+        }
+        .back-to-cart:hover {
+            background: #5a6268;
+            color: white;
+            text-decoration: none;
+        }
+        
+        /* Ensure navbar and footer are visible */
+        .navbar {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            background: linear-gradient(135deg, #007bff, #0056b3) !important;
+            color: white !important;
+            padding: 15px 30px !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+        }
+        
+        footer {
+            background-color: #2c3e50 !important;
+            color: white !important;
+            padding: 40px 20px 20px !important;
+            margin-top: 60px !important;
+        }
+        
+        /* Fix checkout page layout to work with navbar/footer */
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .checkout-container {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    
+    <div class="checkout-container">
+        <div class="checkout-header">
+            <h1>💳 Checkout</h1>
+            <p>Complete your order details below</p>
+        </div>
+        
+        <form action="{{ url_for('place_order') }}" method="POST">
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Customer Information -->
+                    <div class="checkout-section">
+                        <h3 class="section-title">👤 Customer Information</h3>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Full Name <span class="required">*</span></label>
+                                    <input type="text" name="name" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Email Address <span class="required">*</span></label>
+                                    <input type="email" name="email" class="form-control" required>
+                                    <div style="background-color: #fff3cd; border: 1px solid #ffeeba; border-radius: 4px; padding: 8px; margin-top: 5px;">
+                                        <small style="color: #856404;">
+                                            <strong>⚠️ Notice:</strong> We have automated spam filtering. Please ensure your email contains relevant business inquiries only.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Phone Number <span class="required">*</span></label>
+                                    <input type="tel" name="phone" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Company Name</label>
+                                    <input type="text" name="company" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Shipping Address -->
+                    <div class="checkout-section">
+                        <h3 class="section-title">🚚 Shipping Address</h3>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Street Address <span class="required">*</span></label>
+                            <textarea name="address" class="form-control" rows="3" required placeholder="Enter your complete address"></textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">City <span class="required">*</span></label>
+                                    <input type="text" name="city" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">State/Province</label>
+                                    <input type="text" name="state" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Postal Code</label>
+                                    <input type="text" name="postal_code" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Country <span class="required">*</span></label>
+                            <select name="country" class="form-control" required onchange="updateShipping()" id="country-select">
+                                <option value="">Select Country</option>
+                                <option value="India">India</option>
+                                <option value="United States">United States</option>
+                                <option value="Germany">Germany</option>
+                                <option value="Australia">Australia</option>
+                                <option value="United Kingdom">United Kingdom</option>
+                                <option value="Canada">Canada</option>
+                                <option value="Japan">Japan</option>
+                                <option value="Singapore">Singapore</option>
+                                <option value="France">France</option>
+                                <option value="Italy">Italy</option>
+                                <!-- Add more countries as needed -->
+                            </select>
+                            
+                            <div id="country-notice" style="background-color: #d1ecf1; border: 1px solid #bee5eb; border-radius: 4px; padding: 8px; margin-top: 8px; display: none;">
+                                <small style="color: #0c5460;">
+                                    <strong>ℹ️ Note:</strong> <span id="country-notice-text"></span>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Shipping Method Display (Read-Only) -->
+                    <div class="checkout-section">
+                        <h3 class="section-title">📦 Shipping Method</h3>
+                        <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">
+                            The shipping method below was selected when you added items to your cart. This cannot be changed during checkout to prevent cost manipulation.
+                        </p>
+                        
+                        <div class="shipping-options">
+                            <div class="shipping-option readonly" id="air-option" data-method="air" style="cursor: default; opacity: 0.7;">
+                                <input type="radio" name="shipping_method" value="air" id="air-shipping" disabled>
+                                <div>
+                                    <strong>✈️ Air Shipping</strong><br>
+                                    <small>5-7 business days</small>
+                                </div>
+                            </div>
+                            
+                            <div class="shipping-option readonly" id="sea-option" data-method="sea" style="display: none; cursor: default; opacity: 0.7;">
+                                <input type="radio" name="shipping_method" value="sea" id="sea-shipping" disabled>
+                                <div>
+                                    <strong>🚢 Sea Shipping</strong><br>
+                                    <small>15-25 business days (13% of air shipping cost)</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="background-color: #e7f3ff; border: 1px solid #b3d9ff; border-radius: 4px; padding: 10px; margin-top: 15px;">
+                            <small style="color: #0c5460;">
+                                <strong>ℹ️ Note:</strong> To change shipping method, please return to your cart and modify items individually, or contact us for assistance.
+                            </small>
+                        </div>
+
+                        <div id="shipping-info" style="margin-top: 15px; padding: 10px; background: #e9ecef; border-radius: 6px; display: none;">
+                            <small id="shipping-details"></small>
+                        </div>
+                    </div>
+                    
+                    <!-- Additional Notes -->
+                    <div class="checkout-section">
+                        <h3 class="section-title">📝 Additional Notes</h3>
+                        <div class="form-group">
+                            <textarea name="notes" class="form-control" rows="4" placeholder="Any special instructions or requirements..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Options -->
+                    <div class="checkout-section">
+                        <h3 class="section-title">💳 Payment Method</h3>
+                        <div class="payment-options">
+                            <div class="payment-option" onclick="selectPayment('paypal')" id="paypal-option">
+                                <input type="radio" name="payment_method" value="paypal" checked>
+                                <div class="payment-info">
+                                    <strong>🅿️ PayPal</strong><br>
+                                    <small>Secure payment with PayPal</small>
+                                </div>
+                            </div>
+                            
+                            <div class="payment-option" onclick="selectPayment('upi')" id="upi-option" style="display: none;">
+                                <input type="radio" name="payment_method" value="upi">
+                                <div class="payment-info">
+                                    <strong>📱 UPI Payment</strong><br>
+                                    <small>Pay using UPI (India only)</small>
+                                </div>
+                            </div>
+                            
+                            <div class="payment-option" onclick="selectPayment('email')" id="email-option" style="display: none;">
+                                <input type="radio" name="payment_method" value="email">
+                                <div class="payment-info">
+                                    <strong>� Bank Transfer</strong><br>
+                                    <small>For bulk orders - Payment details via email</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- PayPal Details (hidden by default) -->
+                        <div id="paypal-details" class="payment-details">
+                            <div class="alert alert-info">
+                                <strong>PayPal Payment:</strong> You will be redirected to PayPal to complete your payment after placing the order.
+                            </div>
+                        </div>
+                        
+                        <!-- UPI Details (hidden by default) -->
+                        <div id="upi-details" class="payment-details" style="display: none;">
+                            <div class="alert alert-info">
+                                <strong>UPI Payment:</strong> You will receive payment instructions via email after placing the order.
+                                <br><small><strong>UPI ID:</strong> qualityclamps@upi</small>
+                            </div>
+                        </div>
+                        
+                        <!-- Email Payment Details (hidden by default) -->
+                        <div id="email-details" class="payment-details" style="display: none;">
+                            <div class="alert alert-info">
+                                <strong>Placing big orders, let's negotiate:</strong> Contact us directly for bulk pricing and custom terms.
+                                <br><small><strong>Email:</strong> orders@qualclamps.com</small>
+                                <div style="background-color: #fff3cd; border: 1px solid #ffeeba; border-radius: 4px; padding: 8px; margin-top: 10px;">
+                                    <small style="color: #856404;">
+                                        <strong>⚠️ Notice:</strong> We have automated spam filtering. Please ensure your email contains relevant business inquiries only.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="checkout-section">
+                        <h3 class="section-title">📋 Order Summary</h3>
+                        
+                        {% for item in cart_items %}
+                        <div class="order-item">
+                            <div class="item-info">
+                                <div class="item-name">{{ item.product.name }}</div>
+                                {% if item.specifications %}
+                                <div class="item-specs">
+                                    <strong>Selected Options:</strong><br>
+                                    {% for spec_category, spec_option in item.specifications.items() %}
+                                        <span style="display: inline-block; margin-right: 15px; margin-bottom: 5px;">
+                                            <strong>{{ spec_category }}:</strong> {{ spec_option }}
+                                            {% if item.spec_details[spec_category].price_modifier != 0 %}
+                                                <span style="color: {% if item.spec_details[spec_category].price_modifier > 0 %}#28a745{% else %}#dc3545{% endif %}; font-weight: 600;">
+                                                    ({% if item.spec_details[spec_category].price_modifier > 0 %}+{% endif %}${{ "%.2f"|format(item.spec_details[spec_category].price_modifier) }})
+                                                </span>
+                                            {% endif %}
+                                            {% if item.spec_details[spec_category].weight_modifier != 0 %}
+                                                <span style="color: #17a2b8; font-weight: 600; font-size: 0.85em;">
+                                                    ({% if item.spec_details[spec_category].weight_modifier > 0 %}+{% endif %}{{ "%.3f"|format(item.spec_details[spec_category].weight_modifier) }}kg)
+                                                </span>
+                                            {% endif %}
+                                        </span>
+                                        {% if not loop.last %}<br>{% endif %}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                
+                                <!-- Pricing breakdown - always show -->
+                                <div style="margin-top: 10px; font-size: 0.9em; color: #6c757d;">
+                                    <div>Base Price: ${{ "%.2f"|format(item.base_price) }}
+                                    {% if item.total_spec_modifier != 0 %}
+                                        | Specifications: {% if item.total_spec_modifier > 0 %}+{% endif %}${{ "%.2f"|format(item.total_spec_modifier) }}
+                                    {% endif %}
+                                    | Unit Price: ${{ "%.2f"|format(item.unit_price) }}</div>
+                                    <div>Base Weight: {{ "%.3f"|format(item.base_weight) }}kg
+                                    {% if item.total_weight_modifier != 0 %}
+                                        | Weight Modifiers: {% if item.total_weight_modifier > 0 %}+{% endif %}{{ "%.3f"|format(item.total_weight_modifier) }}kg
+                                    {% endif %}
+                                    | Unit Weight: {{ "%.3f"|format(item.unit_weight) }}kg</div>
+                                    {% if item.discount_rate > 0 %}
+                                    <div style="color: #28a745;">Bulk Discount ({{ (item.discount_rate * 100)|int }}%): -${{ "%.2f"|format(item.total_discount) }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="item-quantity">×{{ item.quantity }}</div>
+                            <div class="item-price">${{ "%.2f"|format(item.final_total) }}</div>
+                        </div>
+                        {% endfor %}
+                        
+                        <div class="order-summary">
+                            <div class="summary-row">
+                                <span>Subtotal:</span>
+                                <span>${{ "%.2f"|format(products_total) }}</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Weight:</span>
+                                <span>{{ "%.2f"|format(total_weight) }} kg</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Shipping:</span>
+                                <span id="shipping-cost">${{ "%.2f"|format(shipping_total) }}</span>
+                            </div>
+                            <div class="summary-row summary-total">
+                                <span>Total:</span>
+                                <span id="order-total">${{ "%.2f"|format(cart_total) }}</span>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 30px;">
+                            <a href="{{ url_for('cart') }}" class="back-to-cart">← Back to Cart</a>
+                        </div>
+                        
+                        <button type="submit" class="place-order-btn">
+                            🚀 Place Order
+                        </button>
+                        
+                        <div style="margin-top: 15px; text-align: center; color: #6c757d; font-size: 0.9em;">
+                            <small>🔒 Your information is secure and encrypted</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        const productsTotal = {{ products_total }};
+        const shippingTotal = {{ shipping_total }};
+        const cartTotal = {{ cart_total }};
+        const totalWeight = {{ total_weight }};
+        let currentShippingCost = shippingTotal;  // Start with current shipping cost
+        
+        function selectShipping(method) {
+            console.log('Setting shipping method (read-only):', method);
+            
+            // Clear any existing recommendation messages
+            const recommendationMsg = document.getElementById('shipping-recommendation');
+            if (recommendationMsg) {
+                recommendationMsg.style.display = 'none';
+                recommendationMsg.innerHTML = '';
+            }
+            
+            // Update radio buttons (but keep them disabled)
+            document.querySelectorAll('input[name="shipping_method"]').forEach(radio => {
+                radio.checked = (radio.value === method);
+                radio.disabled = true; // Ensure they stay disabled
+                console.log(`Radio ${radio.value} checked: ${radio.checked} (disabled)`);
+            });
+            
+            // Update visual selection but keep readonly styling
+            document.querySelectorAll('.shipping-option').forEach(option => {
+                option.classList.remove('selected');
+                const optionMethod = option.getAttribute('data-method');
+                if (optionMethod === method) {
+                    option.classList.add('selected');
+                    option.style.display = 'block'; // Make sure selected option is visible
+                    console.log(`Added selected class to ${method} option (read-only)`);
+                }
+            });
+            
+            // Update shipping cost calculation
+            updateShipping();
+        }
+        
+        // Remove shipping event listeners to prevent manipulation
+        function addShippingEventListeners() {
+            // Intentionally empty - no click handlers for readonly shipping options
+            console.log('Shipping options are read-only - no event listeners added');
+        }
+        
+        function updateShipping() {
+            const country = document.querySelector('select[name="country"]').value;
+            const method = document.querySelector('input[name="shipping_method"]:checked').value;
+            
+            console.log('UpdateShipping called:', { country, method, totalWeight });
+            
+            // Update payment options based on country and order size
+            updatePaymentOptions();
+            
+            if (!country) {
+                document.getElementById('shipping-cost').textContent = 'Select country';
+                document.getElementById('order-total').textContent = `$${cartTotal.toFixed(2)}`;
+                return;
+            }
+            
+            // Note: Shipping method is read-only and determined by cart contents
+            // No manipulation of shipping options is allowed here
+            
+            // Show loading state
+            document.getElementById('shipping-cost').textContent = 'Calculating...';
+            
+            // Get total quantity for shipping calculation
+            const totalQuantity = {{ cart_items | sum(attribute='quantity') }};
+            
+            // Calculate shipping
+            fetch(`/shipping-info/${encodeURIComponent(country)}?weight=${totalWeight}&method=${method}&quantity=${totalQuantity}`)
+                .then(response => {
+                    console.log('Shipping response status:', response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Shipping data received:', data);
+                    if (data.allowed) {
+                        currentShippingCost = data.shipping_cost;
+                        document.getElementById('shipping-cost').textContent = `$${currentShippingCost.toFixed(2)}`;
+                        document.getElementById('order-total').textContent = `$${(productsTotal + currentShippingCost).toFixed(2)}`;
+                        
+                        // Show shipping info
+                        document.getElementById('shipping-info').style.display = 'block';
+                        document.getElementById('shipping-details').textContent = data.calculation;
+                    } else {
+                        document.getElementById('shipping-cost').textContent = 'Not available';
+                        document.getElementById('shipping-info').style.display = 'block';
+                        document.getElementById('shipping-details').textContent = data.message;
+                        document.getElementById('order-total').textContent = `$${productsTotal.toFixed(2)}`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Shipping calculation error:', error);
+                    document.getElementById('shipping-cost').textContent = 'Error calculating';
+                });
+        }
+        
+        function selectPayment(method) {
+            // Update radio buttons
+            document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
+                radio.checked = (radio.value === method);
+            });
+            
+            // Update visual selection
+            document.querySelectorAll('.payment-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            document.querySelector(`input[value="${method}"]`).closest('.payment-option').classList.add('selected');
+            
+            // Show/hide payment details
+            document.querySelectorAll('.payment-details').forEach(detail => {
+                detail.style.display = 'none';
+            });
+            
+            if (method === 'paypal') {
+                document.getElementById('paypal-details').style.display = 'block';
+            } else if (method === 'upi') {
+                document.getElementById('upi-details').style.display = 'block';
+            } else if (method === 'email') {
+                document.getElementById('email-details').style.display = 'block';
+            }
+        }
+        
+        function updatePaymentOptions() {
+            const country = document.querySelector('select[name="country"]').value;
+            const totalQuantity = {{ cart_items | sum(attribute='quantity') }};
+            
+            // Show/hide UPI option based on country
+            const upiOption = document.getElementById('upi-option');
+            if (country === 'India') {
+                upiOption.style.display = 'block';
+            } else {
+                upiOption.style.display = 'none';
+                // If UPI was selected but country is not India, switch to PayPal
+                if (document.querySelector('input[name="payment_method"]:checked').value === 'upi') {
+                    selectPayment('paypal');
+                }
+            }
+            
+            // Show/hide email option based on order size (500+ items)
+            const emailOption = document.getElementById('email-option');
+            if (totalQuantity >= 500) {
+                emailOption.style.display = 'block';
+            } else {
+                emailOption.style.display = 'none';
+                // If email was selected but quantity is less than 500, switch to PayPal
+                if (document.querySelector('input[name="payment_method"]:checked').value === 'email') {
+                    selectPayment('paypal');
+                }
+            }
+        }
+        
+        // Initialize shipping calculation when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const countrySelect = document.querySelector('select[name="country"]');
+            
+            // Collect shipping countries from cart items
+            const cartShippingCountries = [];
+            {% for item in cart_items %}
+                {% if item.shipping and item.shipping.country %}
+                    cartShippingCountries.push('{{ item.shipping.country }}');
+                {% endif %}
+            {% endfor %}
+            
+            // Determine the most common shipping method from cart items
+            const cartShippingMethods = [];
+            {% for item in cart_items %}
+                {% if item.shipping and item.shipping.method %}
+                    cartShippingMethods.push('{{ item.shipping.method }}');
+                {% endif %}
+            {% endfor %}
+            
+            // Auto-populate country if consistent across cart items
+            if (cartShippingCountries.length > 0) {
+                const uniqueCountries = [...new Set(cartShippingCountries)];
+                
+                if (uniqueCountries.length === 1) {
+                    // All items have the same country - auto-select it
+                    const selectedCountry = uniqueCountries[0];
+                    countrySelect.value = selectedCountry;
+                    
+                    // Show notice
+                    const countryNotice = document.getElementById('country-notice');
+                    const countryNoticeText = document.getElementById('country-notice-text');
+                    if (countryNotice && countryNoticeText) {
+                        countryNoticeText.textContent = `Country auto-selected based on your cart items (${selectedCountry}). You can change it if needed.`;
+                        countryNotice.style.display = 'block';
+                    }
+                    
+                    console.log('Auto-selected country:', selectedCountry);
+                } else if (uniqueCountries.length > 1) {
+                    // Multiple countries in cart - show notice
+                    const countryNotice = document.getElementById('country-notice');
+                    const countryNoticeText = document.getElementById('country-notice-text');
+                    if (countryNotice && countryNoticeText) {
+                        countryNoticeText.textContent = `Your cart contains items with different shipping countries (${uniqueCountries.join(', ')}). Please select your preferred shipping destination.`;
+                        countryNotice.style.display = 'block';
+                        countryNotice.style.backgroundColor = '#fff3cd';
+                        countryNotice.style.borderColor = '#ffeeba';
+                        countryNoticeText.style.color = '#856404';
+                    }
+                    
+                    console.log('Multiple countries found:', uniqueCountries);
+                }
+            }
+            
+            // If we have shipping methods in cart, use the most common one
+            if (cartShippingMethods.length > 0) {
+                const methodCounts = {};
+                cartShippingMethods.forEach(method => {
+                    methodCounts[method] = (methodCounts[method] || 0) + 1;
+                });
+                
+                // Find the most common method
+                let mostCommonMethod = 'air'; // default fallback
+                let maxCount = 0;
+                for (const method in methodCounts) {
+                    if (methodCounts[method] > maxCount) {
+                        maxCount = methodCounts[method];
+                        mostCommonMethod = method;
+                    }
+                }
+                
+                console.log('Cart shipping methods:', cartShippingMethods);
+                console.log('Most common method:', mostCommonMethod);
+                
+                // Set the default shipping method based on cart contents (read-only)
+                if (mostCommonMethod === 'sea') {
+                    // Show sea option and select it (disabled)
+                    const seaOption = document.getElementById('sea-option');
+                    if (seaOption) {
+                        seaOption.style.display = 'block';
+                        selectShipping('sea');
+                    }
+                } else {
+                    selectShipping('air');
+                }
+                
+                console.log('Shipping method set to:', mostCommonMethod, '(read-only)');
+            }
+            
+            // Initialize payment options
+            updatePaymentOptions();
+            
+            // Add shipping option event listeners
+            addShippingEventListeners();
+            
+            // Auto-calculate shipping if country is pre-selected
+            if (countrySelect.value) {
+                updateShipping();
+            }
+        });
+    </script>
+    
+    {% include 'footer.html' %}
+</body>
+</html>

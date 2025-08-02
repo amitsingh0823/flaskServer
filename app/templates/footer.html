@@ -1,0 +1,34 @@
+<footer>
+        <div class="footer-columns">
+            <div>
+                <h4>QualClamps 🔧</h4>
+                <p>Premium clamps for automotive, aerospace, and industrial applications.</p>
+            </div>
+            <div>
+                <h4>Products</h4>
+                <ul>
+                    <li><a href="{{ url_for('category_products', category_folder='v_band') }}">V-Band Clamps</a></li>
+                    <li><a href="{{ url_for('category_products', category_folder='t_bolt_clamps') }}">T-Bolt Clamps</a></li>
+                    <li><a href="{{ url_for('custom_clamps') }}">Custom Solutions</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="{{ url_for('fabrication') }}">Fabrication</a></li>
+                    <li><a href="{{ url_for('custom_clamps') }}">Custom Clamps</a></li>
+                    <li><a href="{{ url_for('contact') }}">Get Quote</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">About Us</a></li>
+                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+        <p class="copyright">
+            &copy; 2025 QualClamps - A Saroj Engineering Works product. All rights reserved.
+        </p>
+    </footer>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Custom Clamps | QualClamps</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header class="navbar">
+                <div class="logo">
+            <a href="{{ url_for('index') }}" style="text-decoration: none; color: inherit;">
+                Qual<span style="color:blue">Clamps</span> 🔧
+            </a>
+        </div>
+        <nav>
+            <a href="/">Home</a>
+            <a href="#">Products</a>
+            <a href="#">About</a>
+            <a href="/fabrication">Fabrication</a>
+            <a href="/custom-clamps">Custom Clamps</a>
+            <a href="#">Contact</a>
+        </nav>
+    </header>
+    <main>
+        <section style="display: flex; flex-direction: column; align-items: center; text-align: center; padding: 40px 20px;">
+            <h1>Custom Clamp Solutions</h1>
+            <img src="{{ url_for('static', filename='images/custom_clamps/custom_clamp.jpeg') }}" alt="Custom Clamps Placeholder" style="width:100%; max-width:400px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin: 20px 0;">
+            <p style="max-width: 800px;">We specialize in designing and manufacturing custom clamps tailored to your specific requirements. Our team creates solutions across various industries including automotive and aerospace.</p>
+            <p style="margin-top: 20px;">
+                <strong>📧 Email:</strong> <a href="mailto:sales@qualclamps.com">sales@qualclamps.com</a><br>
+                <strong>📞 Phone:</strong> +91-8076050909
+            </p>
+            <div style="background-color: #fff3cd; border: 1px solid #ffeeba; border-radius: 6px; padding: 15px; margin: 20px auto; max-width: 800px; text-align: left;">
+                <p style="margin: 0; color: #856404; font-size: 0.9em;">
+                    <strong>⚠️ Important Notice:</strong> We have an automated spam filtering system that differentiates between important and irrelevant emails. Please ensure your email contains relevant business inquiries. Non-important emails will be automatically deleted or flagged and we won't be able to help you.
+                </p>
+            </div>
+        </section>
+    </main>
+    {% include 'footer.html' %}
+</body>
+</html>

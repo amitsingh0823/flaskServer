@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Products - {{ folder }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 30px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        h2, h3 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            margin-top: 30px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .form-actions {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+    {% include 'navbar.html' %}
+
+    <h2>Products in Category: {{ folder }}</h2>
+    <p style="text-align: center; color: #666;">You are currently managing the "<strong>{{ folder }}</strong>" category.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>OEM</th>
+                <th>Weight</th>
+                <th>Price (USD)</th>
+                <th>Stock</th>
+                <th>Shipping (IN)</th>
+                <th>Image</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for product in products %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.oem }}</td>
+                <td>{{ product.weight }}</td>
+                <td>${{ "%.2f"|format(product.price|default(0)|float) }}</td>
+                <td>{{ product.stock }}</td>
+                <td>{{ product.shipping_cost['India'] }}</td>
+                <td><img src="{{ url_for('static', filename='images/' ~ product.image) }}" width="60"></td>
+                <td>
+                    <a href="{{ url_for('edit_product', folder=folder, slug=slugify(product.name)) }}">Edit</a> |
+                    <a href="{{ url_for('delete_product', folder=folder, slug=slugify(product.name)) }}" onclick="return confirm('Are you sure?')">Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% include 'footer.html' %}
+    </div>
+</body>
+</html>

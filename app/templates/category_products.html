@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ category.name }} - QualClamps</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        .breadcrumb {
+            background: #e9ecef;
+            padding: 15px 0;
+        }
+        .breadcrumb-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .breadcrumb a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        .category-header {
+            background: white;
+            padding: 40px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .category-title {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .category-description {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 0;
+        }
+        .products-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 20px 0;
+        }
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid #f0f0f0;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border-color: #007bff;
+        }
+        .product-image {
+            width: 100%;
+            height: 220px;
+            object-fit: contain;
+            object-position: center;
+            background: #f8f9fa;
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .product-content {
+            padding: 20px;
+        }
+        .product-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        .product-description {
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .product-price {
+            font-size: 1.3rem;
+            color: #28a745;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .product-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+        .product-weight {
+            color: #666;
+        }
+        .product-stock {
+            color: #28a745;
+            font-weight: 500;
+        }
+        .product-stock.low {
+            color: #ffc107;
+        }
+        .product-stock.out {
+            color: #dc3545;
+        }
+        .shipping-info {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        .view-product-btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            font-weight: 500;
+            transition: background 0.3s ease;
+        }
+        .view-product-btn:hover {
+            background: #0056b3;
+            color: white;
+            text-decoration: none;
+        }
+        .no-products {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Responsive Grid */
+        @media (max-width: 1200px) {
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 25px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+            }
+            .product-image {
+                height: 180px;
+                padding: 10px;
+            }
+            .product-content {
+                padding: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    
+    <div class="breadcrumb">
+        <div class="breadcrumb-container">
+            <a href="{{ url_for('index') }}">Home</a> / 
+            <a href="{{ url_for('products') }}">Products</a> / 
+            {{ category.name }}
+        </div>
+    </div>
+
+    <div class="category-header">
+        <div class="header-container">
+            <h1 class="category-title">{{ category.name }}</h1>
+            <p class="category-description">{{ category.description }}</p>
+            
+            <div style="background-color: #fff3cd; border: 1px solid #ffeeba; border-radius: 4px; padding: 12px; margin-top: 15px; max-width: 800px;">
+                <p style="margin: 0; color: #856404; font-size: 0.9rem;">
+                    <strong>⚠️ Shipping Notice:</strong> Our automated shipping cost calculation system may misinterpret results for higher quantities (500+ pieces). 
+                    To avoid paying extra money and get accurate pricing, please consider using the <strong>email method</strong> during checkout for bulk orders. 
+                    We'll provide personalized quotes with the best shipping rates.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="products-container">
+        <a href="{{ url_for('products') }}" class="back-link">← Back to All Categories</a>
+        
+        {% if products %}
+            <div class="products-grid">
+                {% for product in products %}
+                <div class="product-card">
+                    {% if product.images and product.images|length > 0 %}
+                        <img src="{{ url_for('static', filename='images/' ~ product.images[0]) }}" 
+                             alt="{{ product.name }}" 
+                             class="product-image">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='images/' ~ product.image) }}" 
+                             alt="{{ product.name }}" 
+                             class="product-image">
+                    {% endif %}
+                    <div class="product-content">
+                        <h3 class="product-name">{{ product.name }}</h3>
+                        <p class="product-description">{{ product.description }}</p>
+                        
+                        <div class="product-price">
+                            <strong>${{ "%.2f"|format(product.price|default(0)|float) }}</strong>
+                        </div>
+                        
+                        <div class="product-meta">
+                            <span class="product-weight">Weight: {{ product.weight }}kg</span>
+                            <span class="product-stock {% if product.stock < 5 %}low{% elif product.stock == 0 %}out{% endif %}">
+                                {% if product.stock == 0 %}
+                                    Out of Stock
+                                {% elif product.stock < 5 %}
+                                    Low Stock ({{ product.stock }})
+                                {% else %}
+                                    In Stock ({{ product.stock }})
+                                {% endif %}
+                            </span>
+                        </div>
+                        
+                        {% if product.oem %}
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">
+                            <strong>OEM:</strong> {{ product.oem }}
+                        </div>
+                        {% endif %}
+                        
+                        <div class="shipping-info">
+                            <strong>India Shipping:</strong> ${{ "%.2f"|format(product.india_shipping) }}
+                        </div>
+                        
+                        <a href="{{ url_for('product_detail', category_folder=category.folder, product_slug=slugify(product.name)) }}" 
+                           class="view-product-btn">View Details</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-products">
+                <h2>No Products Available</h2>
+                <p>This category doesn't have any products yet. Please check back later!</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Bulk Orders Section -->
+    <section class="bulk-orders" style="background: linear-gradient(135deg, #007bff, #0056b3); color: white; text-align: center; border-radius: 15px; margin: 40px auto; max-width: 1200px; padding: 60px 20px;">
+        <h2 style="color: white; margin-bottom: 20px;">📧 Placing Big Orders? Let's Negotiate!</h2>
+        <p style="font-size: 1.2em; margin-bottom: 20px;">For bulk orders and custom pricing, contact us directly for the best deals.</p>
+        <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; display: inline-block;">
+            <strong style="font-size: 1.1em;">Email:</strong> 
+            <a href="mailto:orders@qualclamps.com" style="color: #ffd700; text-decoration: none; font-weight: bold;">orders@qualclamps.com</a>
+        </div>
+        <div style="background-color: #fff3cd; border: 1px solid #ffeeba; border-radius: 6px; padding: 15px; margin: 20px auto; max-width: 600px; text-align: left;">
+            <p style="margin: 0; color: #856404; font-size: 0.9em;">
+                <strong>⚠️ Important Notice:</strong> We have an automated spam filtering system that differentiates between important and irrelevant emails. Please ensure your email contains relevant business inquiries. Non-important emails will be automatically deleted or flagged and we won't be able to help you.
+            </p>
+        </div>
+    </section>
+
+    {% include 'footer.html' %}
+</body>
+</html>

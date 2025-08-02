@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Product to {{ folder }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .form-actions {
+            text-align: center;
+            margin-top: 20px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .specifications-section {
+            border: 2px solid #e9ecef;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+        }
+        .specifications-section h3 {
+            margin-top: 0;
+            color: #495057;
+        }
+        .specification-group {
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            background-color: white;
+        }
+        .spec-header {
+            margin-bottom: 15px;
+        }
+        .spec-header input {
+            font-weight: bold;
+        }
+        .spec-option {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .spec-option input {
+            flex: 1;
+        }
+        .add-option, .remove-option, .remove-spec, #add-specification {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .remove-option, .remove-spec {
+            background-color: #dc3545;
+        }
+        .add-option:hover, #add-specification:hover {
+            background-color: #0056b3;
+        }
+        .remove-option:hover, .remove-spec:hover {
+            background-color: #c82333;
+        }
+        .image-upload-section {
+            border: 2px dashed #dee2e6;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+        }
+        .image-upload-container {
+            margin-bottom: 15px;
+        }
+        .image-upload-item {
+            background: white;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .image-upload-item label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .image-upload-item input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .image-upload-item small {
+            color: #666;
+            font-size: 0.85rem;
+            display: block;
+            margin-top: 5px;
+        }
+        .add-image-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .add-image-btn:hover {
+            background-color: #218838;
+        }
+        .remove-image-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .remove-image-btn:hover {
+            background-color: #c82333;
+        }
+        .upload-info {
+            color: #666;
+            font-size: 0.9rem;
+            display: block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% include 'navbar.html' %}
+
+        <h2>Add New Product to "{{ folder }}"</h2>
+        <form action="{{ url_for('add_product', folder=folder) }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" name="name" required>
+            </div>
+            <div class="form-group">
+                <label>Description:</label>
+                <textarea name="description" rows="3" required></textarea>
+            </div>
+            <div class="form-group">
+                <label>OEM Part Numbers cross referenced (comma-separated for multiple companies):</label>
+                <input type="text" name="oem" required>
+            </div>
+            <div class="form-group">
+                <label>Weight (in kg):</label>
+                <input type="number" name="weight" step="0.001" min="0.001" required>
+            </div>
+            <div class="form-group">
+                <label>Base Price (USD):</label>
+                <input type="number" name="price" step="0.01" min="0" required>
+                <small>This is the base price. Additional specifications can add to this price.</small>
+            </div>
+            
+            <!-- Product Specifications Section -->
+            <div class="specifications-section">
+                <h3>Product Specifications & Pricing</h3>
+                <p>Add different specifications that customers can choose from (e.g., sizes, materials, finishes). Each specification can have a price modifier and weight modifier that affects shipping cost.</p>
+                
+                <div id="specifications-container">
+                    <div class="specification-group">
+                        <div class="spec-header">
+                            <label>Specification Category:</label>
+                            <input type="text" name="spec_categories[]" placeholder="e.g., Size, Material, Finish" />
+                        </div>
+                        <div class="spec-options">
+                            <div class="spec-option">
+                                <input type="text" name="spec_options[0][]" placeholder="Option name (e.g., 2.5 inch)" />
+                                <input type="number" name="spec_prices[0][]" step="0.01" placeholder="Price modifier (+/-)" />
+                                <input type="number" name="spec_weights[0][]" step="0.001" placeholder="Weight modifier in kg (+/-)" />
+                                <button type="button" class="remove-option">Remove</button>
+                            </div>
+                        </div>
+                        <button type="button" class="add-option" data-spec-index="0">Add Option</button>
+                        <button type="button" class="remove-spec">Remove Category</button>
+                    </div>
+                </div>
+                <button type="button" id="add-specification">Add Specification Category</button>
+            </div>
+            
+            <div class="form-group">
+                <label>Stock:</label>
+                <input type="number" name="stock" required>
+            </div>
+            <div class="form-group">
+                <label>Product Images:</label>
+                <div class="image-upload-section">
+                    <div class="image-upload-container" id="image-uploads">
+                        <div class="image-upload-item">
+                            <label>Main Image (Required):</label>
+                            <input type="file" name="images[]" accept="image/*" required>
+                            <small>This will be the primary product image</small>
+                        </div>
+                    </div>
+                    <button type="button" id="add-image" class="add-image-btn">Add Another Image</button>
+                    <small class="upload-info">You can upload multiple images to showcase your product from different angles.</small>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit">Add Product</button>
+            </div>
+        </form>
+
+        {% include 'footer.html' %}
+    </div>
+
+    <script>
+        let specIndex = 1;
+        let imageIndex = 1;
+
+        // Add new specification category
+        document.getElementById('add-specification').addEventListener('click', function() {
+            const container = document.getElementById('specifications-container');
+            const newSpec = document.createElement('div');
+            newSpec.className = 'specification-group';
+            newSpec.innerHTML = `
+                <div class="spec-header">
+                    <label>Specification Category:</label>
+                    <input type="text" name="spec_categories[]" placeholder="e.g., Size, Material, Finish" />
+                </div>
+                <div class="spec-options">
+                    <div class="spec-option">
+                        <input type="text" name="spec_options[${specIndex}][]" placeholder="Option name" />
+                        <input type="number" name="spec_prices[${specIndex}][]" step="0.01" placeholder="Price modifier (+/-)" />
+                        <input type="number" name="spec_weights[${specIndex}][]" step="0.001" placeholder="Weight modifier in kg (+/-)" />
+                        <button type="button" class="remove-option">Remove</button>
+                    </div>
+                </div>
+                <button type="button" class="add-option" data-spec-index="${specIndex}">Add Option</button>
+                <button type="button" class="remove-spec">Remove Category</button>
+            `;
+            container.appendChild(newSpec);
+            specIndex++;
+            
+            // Update all specification indices to be sequential
+            updateSpecificationIndices();
+        });
+
+        // Function to update all specification indices to be sequential
+        function updateSpecificationIndices() {
+            const specGroups = document.querySelectorAll('.specification-group');
+            specGroups.forEach((group, index) => {
+                // Update all inputs and buttons in this group to use the correct index
+                group.querySelectorAll('input[name^="spec_options["]').forEach(input => {
+                    input.name = `spec_options[${index}][]`;
+                });
+                group.querySelectorAll('input[name^="spec_prices["]').forEach(input => {
+                    input.name = `spec_prices[${index}][]`;
+                });
+                group.querySelectorAll('input[name^="spec_weights["]').forEach(input => {
+                    input.name = `spec_weights[${index}][]`;
+                });
+                group.querySelector('.add-option').setAttribute('data-spec-index', index);
+            });
+        }
+
+        // Add new image upload field
+        document.getElementById('add-image').addEventListener('click', function() {
+            const container = document.getElementById('image-uploads');
+            const newImageUpload = document.createElement('div');
+            newImageUpload.className = 'image-upload-item';
+            newImageUpload.innerHTML = `
+                <button type="button" class="remove-image-btn">Remove</button>
+                <label>Additional Image:</label>
+                <input type="file" name="images[]" accept="image/*">
+                <small>Additional product image</small>
+            `;
+            container.appendChild(newImageUpload);
+        });
+
+        // Event delegation for dynamic buttons
+        document.addEventListener('click', function(e) {
+            // Add option to specification
+            if (e.target.classList.contains('add-option')) {
+                const specIndex = e.target.getAttribute('data-spec-index');
+                const optionsContainer = e.target.parentElement.querySelector('.spec-options');
+                const newOption = document.createElement('div');
+                newOption.className = 'spec-option';
+                newOption.innerHTML = `
+                    <input type="text" name="spec_options[${specIndex}][]" placeholder="Option name" />
+                    <input type="number" name="spec_prices[${specIndex}][]" step="0.01" placeholder="Price modifier (+/-)" />
+                    <input type="number" name="spec_weights[${specIndex}][]" step="0.001" placeholder="Weight modifier in kg (+/-)" />
+                    <button type="button" class="remove-option">Remove</button>
+                `;
+                optionsContainer.appendChild(newOption);
+            }
+
+            // Remove option
+            if (e.target.classList.contains('remove-option')) {
+                e.target.parentElement.remove();
+            }
+
+            // Remove specification category
+            if (e.target.classList.contains('remove-spec')) {
+                e.target.parentElement.remove();
+                // Update indices after removing a category
+                updateSpecificationIndices();
+            }
+
+            // Remove image upload
+            if (e.target.classList.contains('remove-image-btn')) {
+                e.target.parentElement.remove();
+            }
+        });
+    </script>
+</body>
+</html>

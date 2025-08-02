@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Products - QualClamps</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .hero-section h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        .hero-section p {
+            font-size: 1.2rem;
+            margin-bottom: 0;
+        }
+        .categories-container {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .category-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            border: 1px solid #f0f0f0;
+        }
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border-color: #007bff;
+        }
+        .category-image {
+            width: 100%;
+            height: 220px;
+            object-fit: contain;
+            object-position: center;
+            background: #f8f9fa;
+            padding: 15px;
+        }
+        .category-content {
+            padding: 25px;
+        }
+        .category-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .category-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        .category-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .product-count {
+            background: #007bff;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .view-products {
+            color: #007bff;
+            font-weight: 500;
+            text-decoration: none;
+        }
+        .view-products:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    
+    <div class="hero-section">
+        <h1>Our Product Categories</h1>
+        <p>Explore our comprehensive range of high-quality clamps and fabrication solutions</p>
+    </div>
+
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+        <div style="background-color: #fff3cd; border: 1px solid #ffeeba; border-radius: 4px; padding: 15px; margin-bottom: 30px;">
+            <p style="margin: 0; color: #856404; font-size: 0.95rem; text-align: center;">
+                <strong>⚠️ Important Shipping Notice:</strong> Our automated shipping cost calculation system may misinterpret results for higher quantities (500+ pieces). 
+                To avoid paying extra money and get accurate pricing, please consider using the <strong>email method</strong> during checkout for bulk orders. 
+                We'll provide personalized quotes with the best shipping rates.
+            </p>
+        </div>
+    </div>
+
+    <div class="categories-container">
+        {% if categories %}
+            <div class="categories-grid">
+                {% for category in categories %}
+                <a href="{{ url_for('category_products', category_folder=category.folder) }}" class="category-card">
+                    <img src="{{ url_for('static', filename='images/' ~ category.image) }}" 
+                         alt="{{ category.name }}" 
+                         class="category-image">
+                    <div class="category-content">
+                        <h3 class="category-title">{{ category.name }}</h3>
+                        <p class="category-description">{{ category.description }}</p>
+                        <div class="category-meta">
+                            <span class="product-count">{{ category.count }} Product{{ 's' if category.count != 1 else '' }}</span>
+                            <span class="view-products">View Products →</span>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 60px 20px;">
+                <h2>No Products Available</h2>
+                <p>We're currently updating our product catalog. Please check back soon!</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Bulk Orders Section -->
+    <section class="bulk-orders" style="background: linear-gradient(135deg, #007bff, #0056b3); color: white; text-align: center; border-radius: 15px; margin: 40px auto; max-width: 1200px; padding: 60px 20px;">
+        <h2 style="color: white; margin-bottom: 20px;">📧 Placing Big Orders? Let's Negotiate!</h2>
+        <p style="font-size: 1.2em; margin-bottom: 20px;">For bulk orders and custom pricing, contact us directly for the best deals.</p>
+        <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; display: inline-block;">
+            <strong style="font-size: 1.1em;">Email:</strong> 
+            <a href="mailto:orders@qualclamps.com" style="color: #ffd700; text-decoration: none; font-weight: bold;">orders@qualclamps.com</a>
+        </div>
+        <div style="background-color: #fff3cd; border: 1px solid #ffeeba; border-radius: 6px; padding: 15px; margin: 20px auto; max-width: 600px; text-align: left;">
+            <p style="margin: 0; color: #856404; font-size: 0.9em;">
+                <strong>⚠️ Important Notice:</strong> We have an automated spam filtering system that differentiates between important and irrelevant emails. Please ensure your email contains relevant business inquiries. Non-important emails will be automatically deleted or flagged and we won't be able to help you.
+            </p>
+        </div>
+    </section>
+
+    {% include 'footer.html' %}
+</body>
+</html>

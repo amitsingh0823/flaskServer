@@ -1,0 +1,73 @@
+[
+  {
+    "name": "4.75 inch V-Band Clamp SEW4I75TBTR SS Nyloc Nut",
+    "description": "V-band clamp with a 4.75-inch nominal diameter. It's designed for securely connecting flanged joints, particularly in applications like turbocharger connections, diesel exhaust systems, and other industrial settings. The clamp is known for its high strength, positive sealing integrity, and ease of installation.",
+    "oem": "9617, 561.29475A, 56129475A, VT10475-A, VT10475A, 998LB-0475, VBC-4765, 2058726, 2295978, J009617, 41-00-1S, 404002S, 88401, 88-401, EOHT-5A281-DA, EOH2-5AQ231C, EOHT5A281DA, EOH25AQ231C, 89509K, 3650434121, 0365\u00a00434\u00a0121, 10229, UV\u00a0405, 320010, 250-0002, 35499",
+    "weight": "0.202",
+    "stock": 1000,
+    "image": "VT10475_1753605095.JPG",
+    "shipping": {
+      "weight_kg": 0.202,
+      "excluded_countries": [
+        "Pakistan",
+        "China"
+      ],
+      "rate_per_1000km_per_kg": 4,
+      "shipping_discount": 0.1
+    },
+    "shipping_cost": {
+      "India": 0.0
+    },
+    "price": 5.3,
+    "specifications": [],
+    "images": [
+      "VT10475_1753605095.JPG",
+      "4.75_inch_1753603503_1753605139.avif"
+    ]
+  },
+  {
+    "name": "5.88 inch V_band Clamp SEW5I88TBTR with SS Nyloc Nut",
+    "description": "V Band Clamps are used to pull together and connect two circular flanges. The resulting joint is much lighter, easier to fit and strip down for maintenance and requires less installation space when compared to traditional bolted flanges.",
+    "oem": "9615,561.29588,56129588E,56129588,VT10588,VT10588-1,1V0588A02,VT105881,583989503,N23505789,9N1941,99502-0588,VBC-5880,494239160,23505789,23506159,J009615,P206607,40500S,88-506,DNP206607,PPP206607,413828000,04-13828-000,01-14596-000,0114596000,210046-0000,320004,VB-588C,VB588C,HD0843,21215,DCP206607,25174573,11ME241,MI-JACK 33170407,NAVISTAR 390226C91,NAVISTAR 1672105C91,89503K,S-5222,PAI ECL1932,10028003,010028-003,0373010149,10028-3,UV501,250-0931,TECTRAN HV588,491627,22476,543871,8070165,35806",
+    "weight": "0.258",
+    "price": 7.2,
+    "stock": 1000,
+    "image": "5.88_inch_1753629332.jxl",
+    "images": [
+      "5.88_inch_1753629332.jxl",
+      "VT10588_1753629332.JPG"
+    ],
+    "specifications": [],
+    "shipping": {
+      "weight_kg": 0.258,
+      "excluded_countries": [
+        "Pakistan",
+        "China"
+      ],
+      "rate_per_1000km_per_kg": 4,
+      "shipping_discount": 0.1
+    }
+  },
+  {
+    "name": "2.88 inch V-Band Clamp for exhaust SEW2I88TBTR with SS nyloc Nut",
+    "description": "NOMINAL DIAMETER (\u00d8)IN 2.88,INSERT THICKNESS (A)IN 0.06,INSERT APEX WIDTH (B)IN 0.207,INSERT DEPTH (C))IN 0.281,BAND THICKNESS (D)IN 0.035,BAND WIDTH (E)IN 0.75",
+    "oem": "ACI 88287,AUTOMANN 561.29288,AUTOMANN 56129288,BREEZE VT10288,CLAMPS, INC VBC-2894,DETROIT DIESEL 8920206,DYNAFLEX 40-220S,DYNAFLEX 40220S,EX AIR 88-287,NELSON EXHAUST 90603K,NORMA 3651600724,NORMA 0365 1600 724,POWER PRODUCTS VBC250DD,R.G. RAY 10183",
+    "weight": "0.156",
+    "price": 3.3,
+    "stock": 1000,
+    "image": "VT10288_1754105531.webp",
+    "images": [
+      "VT10288_1754105531.webp"
+    ],
+    "specifications": [],
+    "shipping": {
+      "weight_kg": 0.156,
+      "excluded_countries": [
+        "Pakistan",
+        "China"
+      ],
+      "rate_per_1000km_per_kg": 14,
+      "shipping_discount": 0.5
+    }
+  }
+]

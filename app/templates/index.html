@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QualClamps | Premium Industrial Clamps</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+      #banner-img {
+          height: 400px;
+          width: 100%;
+          object-fit: contain;
+      }
+
+      body {
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          margin: 0;
+          padding: 0;
+          line-height: 1.6;
+          background-color: #f9f9f9;
+      }
+
+      section {
+          padding: 60px 20px;
+          max-width: 1200px;
+          margin: 0 auto;
+      }
+
+      h2 {
+          text-align: center;
+          margin-bottom: 40px;
+          font-size: 2.2rem;
+      }
+
+      .category-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 30px;
+      }
+
+      .category-card {
+          background: white;
+          border-radius: 10px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          overflow: hidden;
+          padding: 20px;
+          text-align: center;
+          transition: transform 0.3s ease;
+      }
+
+      .category-card:hover {
+          transform: translateY(-5px);
+      }
+
+      .category-card img {
+          max-width: 100%;
+          height: 180px;
+          object-fit: cover;
+          border-radius: 8px;
+          margin-bottom: 15px;
+      }
+
+      .btn.small {
+          padding: 8px 16px;
+          font-size: 0.9rem;
+          margin-top: 10px;
+          display: inline-block;
+      }
+
+      .why-list {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          list-style: none;
+          padding: 0;
+          gap: 40px;
+          font-size: 1.1rem;
+          font-weight: 500;
+      }
+
+      .why-list li {
+          background: #fff;
+          padding: 15px 25px;
+          border-radius: 8px;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      }
+
+      .application-cards {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 30px;
+          justify-content: center;
+      }
+
+      .app-card {
+          flex: 1 1 250px;
+          background: white;
+          border-radius: 10px;
+          padding: 25px;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+          text-align: center;
+          transition: transform 0.3s ease;
+      }
+
+      .app-card:hover {
+          transform: translateY(-5px);
+      }
+
+      footer {
+          background: #333;
+          color: white;
+          padding: 40px 20px;
+      }
+
+      .footer-columns {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+          gap: 30px;
+          max-width: 1200px;
+          margin: 0 auto;
+      }
+
+      .footer-columns h4 {
+          margin-bottom: 10px;
+      }
+
+      .footer-columns ul {
+          list-style: none;
+          padding: 0;
+      }
+
+      .footer-columns ul li {
+          margin-bottom: 6px;
+      }
+
+      .copyright {
+          text-align: center;
+          margin-top: 30px;
+          font-size: 0.85rem;
+      }
+    </style>
+    <script>
+        let banners = ["image1.jpg", "image2.jpg", "image3.jpg"];
+        let idx = 0;
+        function rotateBanner() {
+            idx = (idx + 1) % banners.length;
+            document.getElementById("banner-img").src = "/static/images/" + banners[idx];
+        }
+        setInterval(rotateBanner, 3000);
+    </script>
+</head>
+<body>
+    {% include 'navbar.html' %}
+
+    <section class="hero">
+        <div class="hero-text">
+            <h1>Premium Quality <span style="color:blue">Industrial Clamps</span> for Every Application</h1>
+            <p>Engineered for reliability and precision in automotive, industrial, and custom applications.</p>
+            <div class="buttons">
+                <a href="{{ url_for('contact') }}" class="btn secondary">Contact Sales</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img id="banner-img" src="/static/images/image1.jpg" alt="Hero Banner">
+        </div>
+    </section>
+
+    <section class="why-choose">
+        <h2>Why Choose QualClamps</h2>
+        <ul class="why-list">
+            <li>✔️ Premium Materials</li>
+            <li>✔️ Precision Engineering</li>
+            <li>✔️ Global Shipping</li>
+            <li>✔️ Technical Support</li>
+        </ul>
+    </section>
+
+    <section class="categories">
+        <h2>Product Categories</h2>
+        <div class="category-grid">
+            {% for cat in categories %}
+            <div class="category-card">
+                <img src="{{ url_for('static', filename='images/' + cat.image) }}" alt="{{ cat.name }}">
+                <h3>{{ cat.name }}</h3>
+                <p>{{ cat.description }}</p>
+                <p><strong>{{ cat.count }} Products</strong></p>
+                <a href="{{ url_for('category_products', category_folder=cat.folder) }}" class="btn small">View Products</a>
+            </div>
+            {% endfor %}
+            <div class="category-card">
+                <img src="{{ url_for('static', filename='images/Fabrication/fabrication.jpg') }}" alt="Fabrication">
+                <h3>Fabrication</h3>
+                <p>Custom fabrication services for mining and industrial applications.</p>
+                <p><strong>Services Page</strong></p>
+                <a href="/fabrication" class="btn small">View Details</a>
+            </div>
+            <div class="category-card">
+                <img src="{{ url_for('static', filename='images/custom_clamps/custom_clamp.jpeg') }}" alt="Custom Clamps">
+                <h3>Custom Clamps</h3>
+                <p>Clamps tailored to your unique specifications and needs.</p>
+                <p><strong>Services Page</strong></p>
+                <a href="/custom-clamps" class="btn small">View Details</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bulk Orders Section -->
+    <section class="bulk-orders" style="background: linear-gradient(135deg, #007bff, #0056b3); color: white; text-align: center; border-radius: 15px; margin: 40px auto;">
+        <h2 style="color: white; margin-bottom: 20px;">📧 Placing Big Orders? Let's Negotiate!</h2>
+        <p style="font-size: 1.2em; margin-bottom: 20px;">For bulk orders and custom pricing, contact us directly for the best deals.</p>
+        <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; display: inline-block;">
+            <strong style="font-size: 1.1em;">Email:</strong> 
+            <a href="mailto:orders@qualclamps.com" style="color: #ffd700; text-decoration: none; font-weight: bold;">orders@qualclamps.com</a>
+        </div>
+        <div style="background-color: #fff3cd; border: 1px solid #ffeeba; border-radius: 6px; padding: 15px; margin: 20px auto; max-width: 600px; text-align: left;">
+            <p style="margin: 0; color: #856404; font-size: 0.9em;">
+                <strong>⚠️ Important Notice:</strong> We have an automated spam filtering system that differentiates between important and irrelevant emails. Please ensure your email contains relevant business inquiries. Non-important emails will be automatically deleted or flagged and we won't be able to help you.
+            </p>
+        </div>
+    </section>
+
+    <section class="applications">
+        <h2>Applications</h2>
+        <div class="application-cards">
+            <div class="app-card">
+                <h4>Automotive</h4>
+                <p>Exhaust systems, turbochargers, and secure high-temp connections.</p>
+            </div>
+            <div class="app-card">
+                <h4>Industrial</h4>
+                <p>Machinery, piping systems, and pressure vessels.</p>
+            </div>
+            <div class="app-card">
+                <h4>Aerospace</h4>
+                <p>Aircraft exhaust systems and critical aerospace applications.</p>
+            </div>
+        </div>
+    </section>
+
+    {% include 'footer.html' %}
+</body>
+</html>

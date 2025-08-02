@@ -1,0 +1,1859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.name }} - QualClamps</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        .breadcrumb {
+            background: #e9ecef;
+            padding: 15px 0;
+        }
+        .breadcrumb-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .breadcrumb a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        .product-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .product-main {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        .product-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+        .product-image-section {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+        }
+        .product-image-gallery {
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+        .main-image-container {
+            margin-bottom: 20px;
+            text-align: center;
+            position: relative;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .product-image {
+            max-width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            cursor: zoom-in;
+            transition: transform 0.3s ease;
+        }
+        .product-image.zoomed {
+            transform: scale(1.5);
+            cursor: zoom-out;
+        }
+        
+        /* Navigation arrows */
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+            z-index: 10;
+        }
+        .nav-arrow:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
+        .nav-arrow.prev {
+            left: 10px;
+        }
+        .nav-arrow.next {
+            right: 10px;
+        }
+        .nav-arrow:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        /* Auto-rotate controls */
+        .carousel-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .carousel-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .carousel-btn:hover {
+            background: #0056b3;
+        }
+        .carousel-btn.active {
+            background: #28a745;
+        }
+        
+        /* Thumbnails */
+        .image-thumbnails {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-height: 80px;
+            overflow-x: auto;
+            padding: 5px;
+        }
+        .thumbnail {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+        .thumbnail:hover {
+            border-color: #007bff;
+            transform: scale(1.05);
+        }
+        .thumbnail.active {
+            border-color: #28a745;
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.3);
+        }
+        
+        /* Image indicator dots */
+        .image-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        .indicator-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ccc;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .indicator-dot.active {
+            background: #007bff;
+        }
+        
+        /* Fullscreen/Lightbox styles */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .lightbox.active {
+            display: flex;
+        }
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+        .lightbox-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .lightbox-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            font-size: 30px;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .lightbox-nav.prev {
+            left: -60px;
+        }
+        .lightbox-nav.next {
+            right: -60px;
+        }
+        
+        /* Mobile responsive design */
+        @media (max-width: 768px) {
+            .product-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .product-image-section {
+                padding: 20px;
+            }
+            
+            .product-info-section {
+                padding: 20px;
+            }
+            
+            .main-image-container {
+                max-height: 300px;
+            }
+            
+            .product-image {
+                max-height: 300px;
+            }
+            
+            .nav-arrow {
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+            }
+            
+            .carousel-controls {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .carousel-btn {
+                font-size: 11px;
+                padding: 6px 10px;
+            }
+            
+            .image-thumbnails {
+                gap: 5px;
+            }
+            
+            .thumbnail {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .lightbox-nav {
+                font-size: 20px;
+                padding: 8px 12px;
+            }
+            
+            .lightbox-nav.prev {
+                left: -50px;
+            }
+            
+            .lightbox-nav.next {
+                right: -50px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .lightbox-nav.prev {
+                left: 10px;
+            }
+            
+            .lightbox-nav.next {
+                right: 10px;
+            }
+            
+            .lightbox-nav {
+                background: rgba(0, 0, 0, 0.7);
+            }
+        }
+        .product-info-section {
+            padding: 40px;
+        }
+        .product-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .product-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #666;
+            margin-bottom: 25px;
+        }
+        .product-price-large {
+            font-size: 2.5rem;
+            color: #28a745;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-align: center;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 2px solid #28a745;
+        }
+        .product-specifications {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        .product-specifications h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #495057;
+        }
+        .spec-category {
+            margin-bottom: 20px;
+        }
+        .spec-category-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 1.1rem;
+        }
+        .spec-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .spec-option-label {
+            display: flex;
+            align-items: center;
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            min-width: 120px;
+            justify-content: center;
+        }
+        .spec-option-label:hover {
+            border-color: #007bff;
+            box-shadow: 0 2px 8px rgba(0,123,255,0.15);
+            transform: translateY(-1px);
+        }
+        .spec-option-label input[type="radio"] {
+            margin-right: 8px;
+            transform: scale(1.2);
+        }
+        .spec-option-label input[type="radio"]:checked + .spec-option-text {
+            font-weight: 600;
+            color: #007bff;
+        }
+        .spec-option-label:has(input:checked) {
+            border-color: #007bff;
+            background-color: #e7f3ff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+        }
+        .price-modifier {
+            color: #28a745;
+            font-weight: 600;
+            margin-left: 5px;
+        }
+        .calculated-price {
+            text-align: center;
+            font-size: 1.4rem;
+            margin-top: 20px;
+            padding: 15px;
+            background: #e7f3ff;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            color: #007bff;
+        }
+        
+        /* Quantity and Discount Styles */
+        .quantity-section {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .quantity-label {
+            font-weight: 600;
+            color: #333;
+            min-width: 80px;
+        }
+        .quantity-input {
+            display: flex;
+            align-items: center;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            background: white;
+        }
+        .quantity-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .quantity-btn:hover {
+            background: #0056b3;
+        }
+        .quantity-btn:first-child {
+            border-radius: 4px 0 0 4px;
+        }
+        .quantity-btn:last-child {
+            border-radius: 0 4px 4px 0;
+        }
+        .quantity-field {
+            border: none;
+            padding: 8px 15px;
+            width: 80px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .quantity-field:focus {
+            outline: none;
+        }
+        
+        .discount-display {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .pricing-breakdown {
+            background: white;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        .pricing-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .pricing-row:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #28a745;
+            margin-top: 10px;
+            padding-top: 15px;
+            border-top: 2px solid #28a745;
+        }
+        
+        /* Add to Cart Button Styles */
+        .add-to-cart-btn {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+        .add-to-cart-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+        .add-to-cart-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .cart-message {
+            margin-top: 10px;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1em;
+            animation: slideIn 0.3s ease-out;
+        }
+        .cart-message.success {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+            border: 2px solid #28a745;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+        .cart-message.error {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+            border: 2px solid #dc3545;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                background-color: #dc3545;
+            }
+            50% {
+                transform: scale(1.2);
+                background-color: #28a745;
+            }
+            100% {
+                transform: scale(1);
+                background-color: #dc3545;
+            }
+        }
+        
+        /* Enhanced Shipping Styles */
+        .shipping-method-selector {
+            display: flex;
+            gap: 15px;
+            margin: 15px 0;
+            align-items: center;
+        }
+        .shipping-method-option {
+            display: flex;
+            align-items: center;
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .shipping-method-option:hover {
+            border-color: #007bff;
+        }
+        .shipping-method-option.selected {
+            border-color: #007bff;
+            background: #e7f3ff;
+        }
+        .shipping-method-option input[type="radio"] {
+            margin-right: 8px;
+        }
+        .shipping-method-details {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .product-specs {
+            margin-bottom: 30px;
+        }
+        .spec-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .spec-label {
+            font-weight: 600;
+            color: #333;
+        }
+        .spec-value {
+            color: #666;
+        }
+        .stock-status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+        .stock-in {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .stock-low {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .stock-out {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .shipping-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .shipping-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .shipping-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .shipping-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        .shipping-country {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .shipping-cost {
+            font-size: 1.2rem;
+            color: #007bff;
+            font-weight: 600;
+        }
+        .shipping-calculator {
+            background: #e9ecef;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .calculator-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .calculator-form {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .calculator-input {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            flex: 1;
+            min-width: 200px;
+            font-size: 14px;
+            background-color: white;
+        }
+        .calculator-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+        }
+        .calculator-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .calculator-btn:hover {
+            background: #0056b3;
+        }
+        .calculator-result {
+            margin-top: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            display: none;
+        }
+        .contact-section {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+        }
+        .contact-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        .contact-subtitle {
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+        .contact-btn {
+            background: white;
+            color: #007bff;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+        }
+        .contact-btn:hover {
+            transform: translateY(-2px);
+            text-decoration: none;
+            color: #007bff;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 768px) {
+            .product-layout {
+                grid-template-columns: 1fr;
+            }
+            .product-image-section, .product-info-section {
+                padding: 20px;
+            }
+        }
+
+        /* Shipping Options Styles */
+        .shipping-options {
+            margin-top: 15px;
+        }
+        .shipping-option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .shipping-option:hover:not(.disabled) {
+            border-color: #007bff;
+            box-shadow: 0 2px 8px rgba(0,123,255,0.15);
+            transform: translateY(-1px);
+        }
+        .shipping-option.selected {
+            border-color: #007bff;
+            background-color: #e7f3ff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+        }
+        .shipping-option.disabled {
+            background: #f8f9fa;
+            border-color: #dee2e6;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        .shipping-method-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        .method-icon {
+            font-size: 1.2rem;
+        }
+        .delivery-time {
+            color: #666;
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+        .savings-badge {
+            background: #28a745;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: auto;
+        }
+        .shipping-cost {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+        .shipping-option.disabled .shipping-cost {
+            color: #6c757d;
+        }
+        .calculation-details {
+            color: #666;
+            font-size: 0.85rem;
+            line-height: 1.3;
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    
+    <div class="breadcrumb">
+        <div class="breadcrumb-container">
+            <a href="{{ url_for('index') }}">Home</a> / 
+            <a href="{{ url_for('products') }}">Products</a> / 
+            <a href="{{ url_for('category_products', category_folder=category.folder) }}">{{ category.name }}</a> / 
+            {{ product.name }}
+        </div>
+    </div>
+
+    <div class="product-container">
+        <a href="{{ url_for('category_products', category_folder=category.folder) }}" class="back-link">← Back to {{ category.name }}</a>
+        
+        <div class="product-main">
+            <div class="product-layout">
+                <div class="product-image-section">
+                    <div class="product-image-gallery">
+                        {% if product.images and product.images|length > 0 %}
+                            <!-- Carousel Controls -->
+                            {% if product.images|length > 1 %}
+                            <div class="carousel-controls">
+                                <button id="auto-rotate-btn" class="carousel-btn" onclick="toggleAutoRotate()">
+                                    <span id="auto-rotate-text">▶ Auto Rotate</span>
+                                </button>
+                                <button class="carousel-btn" onclick="openLightbox()">🔍 Fullscreen</button>
+                            </div>
+                            {% endif %}
+                            
+                            <!-- Main Image Container -->
+                            <div class="main-image-container">
+                                <img id="main-image" 
+                                     src="{{ url_for('static', filename='images/' ~ product.images[0]) }}" 
+                                     alt="{{ product.name }}" 
+                                     class="product-image"
+                                     onclick="toggleZoom(this)">
+                                
+                                {% if product.images|length > 1 %}
+                                    <!-- Navigation Arrows -->
+                                    <button class="nav-arrow prev" onclick="changeImage(-1)">‹</button>
+                                    <button class="nav-arrow next" onclick="changeImage(1)">›</button>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Image Indicators -->
+                            {% if product.images|length > 1 %}
+                            <div class="image-indicators">
+                                {% for image in product.images %}
+                                <span class="indicator-dot{% if loop.first %} active{% endif %}" 
+                                      onclick="goToImage({{ loop.index0 }})"></span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            
+                            <!-- Thumbnails -->
+                            {% if product.images|length > 1 %}
+                            <div class="image-thumbnails">
+                                {% for image in product.images %}
+                                <img src="{{ url_for('static', filename='images/' ~ image) }}" 
+                                     alt="{{ product.name }} - Image {{ loop.index }}"
+                                     class="thumbnail{% if loop.first %} active{% endif %}"
+                                     onclick="goToImage({{ loop.index0 }})">
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        {% else %}
+                            <!-- Fallback for single image -->
+                            <div class="main-image-container">
+                                <img id="main-image" 
+                                     src="{{ url_for('static', filename='images/' ~ product.image) }}" 
+                                     alt="{{ product.name }}" 
+                                     class="product-image"
+                                     onclick="toggleZoom(this)">
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="product-info-section">
+                    <h1 class="product-title">{{ product.name }}</h1>
+                    <p class="product-description">{{ product.description }}</p>
+                    
+                    <div class="product-price-large">
+                        <strong>${{ "%.2f"|format(product.price|default(0)|float) }}</strong>
+                    </div>
+                    
+                    <div class="product-specs">
+                        <div class="spec-row">
+                            <span class="spec-label">Weight:</span>
+                            <span class="spec-value">{{ product.weight }} kg</span>
+                        </div>
+                        {% if product.oem %}
+                        <div class="spec-row">
+                            <span class="spec-label">OEM Number:</span>
+                            <span class="spec-value">{{ product.oem }}</span>
+                        </div>
+                        {% endif %}
+                        <div class="spec-row">
+                            <span class="spec-label">Category:</span>
+                            <span class="spec-value">{{ category.name }}</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Product Specifications Selection -->
+                    {% if product.specifications %}
+                    <div class="product-specifications">
+                        <h3>Select Options</h3>
+                        <p style="margin-bottom: 25px; color: #666; font-size: 0.95rem;">
+                            Choose one option from each category below. The final price will be calculated automatically.
+                        </p>
+                        {% for spec in product.specifications %}
+                        <div class="spec-category">
+                            <label class="spec-category-label">{{ spec.category }}:</label>
+                            <div class="spec-options">
+                                {% set outer_loop = loop %}
+                                {% for option in spec.options %}
+                                <label class="spec-option-label">
+                                    <input type="radio" name="spec_category_{{ outer_loop.index0 }}" value="{{ option.name }}" data-price="{{ option.price_modifier }}" data-weight="{{ option.weight_modifier|default(0) }}" {% if loop.first %}checked{% endif %}>
+                                    <span class="spec-option-text">
+                                        {{ option.name }}
+                                        {% if option.price_modifier != 0 %}
+                                            <span class="price-modifier">
+                                                {% if option.price_modifier > 0 %}+{% endif %}${{ "%.2f"|format(option.price_modifier) }}
+                                            </span>
+                                        {% endif %}
+                                        {% if option.weight_modifier is defined and option.weight_modifier != 0 %}
+                                            <span class="weight-modifier" style="color: #28a745; font-size: 0.85em;">
+                                                ({% if option.weight_modifier > 0 %}+{% endif %}{{ "%.3f"|format(option.weight_modifier) }}kg)
+                                            </span>
+                                        {% endif %}
+                                    </span>
+                                </label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                        <div class="calculated-price">
+                            <strong>Total Price: $<span id="total-price">{{ "%.2f"|format(product.price|default(0)|float) }}</span></strong>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Quantity and Bulk Discount Section -->
+                    <div class="quantity-section">
+                        <h3 style="margin-top: 0; margin-bottom: 20px; color: #495057;">💰 Quantity & Bulk Pricing</h3>
+                        
+                        <div class="quantity-controls">
+                            <span class="quantity-label">Quantity:</span>
+                            <div class="quantity-input">
+                                <button type="button" class="quantity-btn" onclick="changeQuantity(-1)">−</button>
+                                <input type="number" id="quantity" class="quantity-field" value="1" min="1" max="{{ product.stock }}" onchange="calculateAll()">
+                                <button type="button" class="quantity-btn" onclick="changeQuantity(1)">+</button>
+                            </div>
+                            <span style="color: #666; font-size: 0.9em;">Max: {{ product.stock }} available</span>
+                        </div>
+                        
+                        <div id="discount-display" class="discount-display" style="display: none;">
+                            🎉 <span id="discount-text"></span>
+                        </div>
+                        
+                        <div class="pricing-breakdown">
+                            <div class="pricing-row">
+                                <span>Unit Price (with options):</span>
+                                <span>$<span id="unit-price">{{ "%.2f"|format(product.price|default(0)|float) }}</span></span>
+                            </div>
+                            <div class="pricing-row">
+                                <span>Quantity:</span>
+                                <span><span id="display-quantity">1</span> pcs</span>
+                            </div>
+                            <div class="pricing-row">
+                                <span>Subtotal:</span>
+                                <span>$<span id="subtotal">{{ "%.2f"|format(product.price|default(0)|float) }}</span></span>
+                            </div>
+                            <div class="pricing-row" id="discount-row" style="display: none;">
+                                <span>Bulk Discount (<span id="discount-percentage">0</span>%):</span>
+                                <span>-$<span id="discount-amount">0.00</span></span>
+                            </div>
+                            <div class="pricing-row">
+                                <span>Final Total:</span>
+                                <span>$<span id="final-total">{{ "%.2f"|format(product.price|default(0)|float) }}</span></span>
+                            </div>
+                        </div>
+                        
+                        <!-- Add to Cart Button -->
+                        <div class="add-to-cart-section" style="margin-top: 25px;">
+                            <button type="button" id="add-to-cart-btn" class="add-to-cart-btn" onclick="addToCart()" 
+                                    {% if product.stock == 0 %}disabled{% else %}disabled{% endif %}>
+                                {% if product.stock == 0 %}
+                                    ❌ Out of Stock
+                                {% else %}
+                                    🛒 Select Shipping First
+                                {% endif %}
+                            </button>
+                            <div id="shipping-required-message" style="margin-top: 10px; color: #856404; background: #fff3cd; padding: 10px; border-radius: 6px; text-align: center; font-size: 0.9em;">
+                                📦 Please calculate shipping cost before adding to cart
+                            </div>
+                            <div id="cart-message" class="cart-message" style="display: none;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="stock-status {% if product.stock == 0 %}stock-out{% elif product.stock < 5 %}stock-low{% else %}stock-in{% endif %}">
+                        {% if product.stock == 0 %}
+                            ❌ Out of Stock
+                        {% elif product.stock < 5 %}
+                            ⚠️ Low Stock - Only {{ product.stock }} left
+                        {% else %}
+                            ✅ In Stock - {{ product.stock }} units available
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="shipping-section">
+            <h2 class="shipping-title">🚚 Shipping Information</h2>
+            <div class="shipping-grid">
+                {% for country, cost in sample_shipping.items() %}
+                <div class="shipping-card">
+                    <div class="shipping-country">{{ country }}</div>
+                    <div class="shipping-cost">${{ "%.2f"|format(cost) }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="shipping-calculator">
+                <div class="calculator-title">Calculate Shipping to Your Country</div>
+                <div class="calculator-form">
+                    <select class="calculator-input" id="country-select">
+                        <option value="">Select your country...</option>
+                        <option value="India">India</option>
+                        <option value="United States">United States</option>
+                        <option value="Canada">Canada</option>
+                        <option value="United Kingdom">United Kingdom</option>
+                        <option value="Germany">Germany</option>
+                        <option value="France">France</option>
+                        <option value="Australia">Australia</option>
+                        <option value="Japan">Japan</option>
+                        <option value="South Korea">South Korea</option>
+                        <option value="Singapore">Singapore</option>
+                        <option value="Malaysia">Malaysia</option>
+                        <option value="Thailand">Thailand</option>
+                        <option value="Indonesia">Indonesia</option>
+                        <option value="Philippines">Philippines</option>
+                        <option value="Vietnam">Vietnam</option>
+                        <option value="Myanmar">Myanmar</option>
+                        <option value="Brazil">Brazil</option>
+                        <option value="Mexico">Mexico</option>
+                        <option value="Argentina">Argentina</option>
+                        <option value="Chile">Chile</option>
+                        <option value="Colombia">Colombia</option>
+                        <option value="Peru">Peru</option>
+                        <option value="Venezuela">Venezuela</option>
+                        <option value="Russia">Russia</option>
+                        <option value="Turkey">Turkey</option>
+                        <option value="Iran">Iran</option>
+                        <option value="Saudi Arabia">Saudi Arabia</option>
+                        <option value="United Arab Emirates">United Arab Emirates</option>
+                        <option value="Qatar">Qatar</option>
+                        <option value="Kuwait">Kuwait</option>
+                        <option value="Israel">Israel</option>
+                        <option value="Egypt">Egypt</option>
+                        <option value="South Africa">South Africa</option>
+                        <option value="Nigeria">Nigeria</option>
+                        <option value="Kenya">Kenya</option>
+                        <option value="Ethiopia">Ethiopia</option>
+                        <option value="Morocco">Morocco</option>
+                        <option value="Algeria">Algeria</option>
+                        <option value="Italy">Italy</option>
+                        <option value="Spain">Spain</option>
+                        <option value="Netherlands">Netherlands</option>
+                        <option value="Belgium">Belgium</option>
+                        <option value="Switzerland">Switzerland</option>
+                        <option value="Austria">Austria</option>
+                        <option value="Poland">Poland</option>
+                        <option value="Sweden">Sweden</option>
+                        <option value="Norway">Norway</option>
+                        <option value="Denmark">Denmark</option>
+                        <option value="Finland">Finland</option>
+                        <option value="Czech Republic">Czech Republic</option>
+                        <option value="Hungary">Hungary</option>
+                        <option value="Romania">Romania</option>
+                        <option value="Greece">Greece</option>
+                        <option value="Portugal">Portugal</option>
+                        <option value="Ireland">Ireland</option>
+                        <option value="New Zealand">New Zealand</option>
+                        <option value="Kazakhstan">Kazakhstan</option>
+                        <option value="Uzbekistan">Uzbekistan</option>
+                        <option value="Mongolia">Mongolia</option>
+                        <option value="Belarus">Belarus</option>
+                        <option value="Ukraine">Ukraine</option>
+                        <option value="Lithuania">Lithuania</option>
+                        <option value="Latvia">Latvia</option>
+                        <option value="Estonia">Estonia</option>
+                        <option value="Georgia">Georgia</option>
+                        <option value="Armenia">Armenia</option>
+                        <option value="Azerbaijan">Azerbaijan</option>
+                        <option value="Kyrgyzstan">Kyrgyzstan</option>
+                        <option value="Tajikistan">Tajikistan</option>
+                        <option value="Turkmenistan">Turkmenistan</option>
+                        <option value="Afghanistan">Afghanistan</option>
+                        <option value="Iraq">Iraq</option>
+                        <option value="Syria">Syria</option>
+                        <option value="Jordan">Jordan</option>
+                        <option value="Lebanon">Lebanon</option>
+                        <option value="Oman">Oman</option>
+                        <option value="Yemen">Yemen</option>
+                        <option value="Bahrain">Bahrain</option>
+                        <option value="Libya">Libya</option>
+                        <option value="Tunisia">Tunisia</option>
+                        <option value="Sudan">Sudan</option>
+                        <option value="Somalia">Somalia</option>
+                        <option value="Uganda">Uganda</option>
+                        <option value="Tanzania">Tanzania</option>
+                        <option value="Zambia">Zambia</option>
+                        <option value="Zimbabwe">Zimbabwe</option>
+                        <option value="Botswana">Botswana</option>
+                        <option value="Namibia">Namibia</option>
+                        <option value="Angola">Angola</option>
+                        <option value="Ghana">Ghana</option>
+                        <option value="Ivory Coast">Ivory Coast</option>
+                        <option value="Senegal">Senegal</option>
+                        <option value="Mali">Mali</option>
+                        <option value="Burkina Faso">Burkina Faso</option>
+                        <option value="Niger">Niger</option>
+                        <option value="Chad">Chad</option>
+                        <option value="Cameroon">Cameroon</option>
+                        <option value="Central African Republic">Central African Republic</option>
+                        <option value="Democratic Republic of Congo">Democratic Republic of Congo</option>
+                        <option value="Madagascar">Madagascar</option>
+                        <option value="Mauritius">Mauritius</option>
+                        <option value="Guatemala">Guatemala</option>
+                        <option value="Belize">Belize</option>
+                        <option value="Honduras">Honduras</option>
+                        <option value="El Salvador">El Salvador</option>
+                        <option value="Nicaragua">Nicaragua</option>
+                        <option value="Costa Rica">Costa Rica</option>
+                        <option value="Panama">Panama</option>
+                        <option value="Ecuador">Ecuador</option>
+                        <option value="Bolivia">Bolivia</option>
+                        <option value="Paraguay">Paraguay</option>
+                        <option value="Uruguay">Uruguay</option>
+                        <option value="Guyana">Guyana</option>
+                        <option value="Suriname">Suriname</option>
+                        <option value="Papua New Guinea">Papua New Guinea</option>
+                        <option value="Fiji">Fiji</option>
+                        <option value="Solomon Islands">Solomon Islands</option>
+                        <option value="Vanuatu">Vanuatu</option>
+                        <option value="New Caledonia">New Caledonia</option>
+                        <option value="Samoa">Samoa</option>
+                        <option value="Tonga">Tonga</option>
+                        <option value="Cook Islands">Cook Islands</option>
+                        <option value="French Polynesia">French Polynesia</option>
+                        <option value="Serbia">Serbia</option>
+                        <option value="Croatia">Croatia</option>
+                        <option value="Slovenia">Slovenia</option>
+                        <option value="Bosnia and Herzegovina">Bosnia and Herzegovina</option>
+                        <option value="Montenegro">Montenegro</option>
+                        <option value="North Macedonia">North Macedonia</option>
+                        <option value="Albania">Albania</option>
+                        <option value="Moldova">Moldova</option>
+                        <option value="Bulgaria">Bulgaria</option>
+                        <option value="Slovakia">Slovakia</option>
+                        <option value="Luxembourg">Luxembourg</option>
+                        <option value="Iceland">Iceland</option>
+                        <option value="Cambodia">Cambodia</option>
+                        <option value="Laos">Laos</option>
+                        <!-- Note: Pakistan and China are excluded as per shipping policy -->
+                    </select>
+                    <button class="calculator-btn" onclick="calculateShipping()">Calculate</button>
+                </div>
+                
+                <!-- Shipping Method Selection -->
+                <div id="shipping-methods" class="shipping-method-selector" style="display: none;">
+                    <strong>Choose Shipping Method:</strong>
+                    <div class="shipping-method-option" onclick="selectShippingMethod('air')">
+                        <input type="radio" name="shipping_method" value="air" id="air-shipping" checked>
+                        <div>
+                            <div><strong>✈️ Air Shipping</strong></div>
+                            <div class="shipping-method-details">Faster delivery (5-10 days)</div>
+                        </div>
+                    </div>
+                    <div class="shipping-method-option" onclick="selectShippingMethod('sea')">
+                        <input type="radio" name="shipping_method" value="sea" id="sea-shipping">
+                        <div>
+                            <div><strong>🚢 Sea Shipping</strong></div>
+                            <div class="shipping-method-details">Economical (30% less cost, 20-35 days)</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="calculator-result" id="shipping-result"></div>
+            </div>
+            
+            <p style="margin-top: 20px; color: #666; font-size: 0.9rem;">
+                <strong>Note:</strong> We ship worldwide except to Pakistan and China. 
+                Shipping costs are calculated based on distance, weight, and quantity. 
+                India domestic shipping is $2.50 per kg. Sea shipping (500+ items) costs 13% of air shipping. 
+                Large quantity discounts apply for air shipping (50+ items get up to 70% discount on air shipping for 5000+ pieces).
+            </p>
+            
+            <div style="background-color: #fff3cd; border: 1px solid #ffeeba; border-radius: 4px; padding: 12px; margin-top: 15px;">
+                <p style="margin: 0; color: #856404; font-size: 0.9rem;">
+                    <strong>⚠️ Important Notice:</strong> Our automated shipping cost calculation system may misinterpret results for higher quantities (500+ pieces). 
+                    To avoid paying extra money and get accurate pricing, please consider using the <strong>email method</strong> during checkout for bulk orders. 
+                    We'll provide personalized quotes with the best shipping rates for your specific order.
+                </p>
+            </div>
+        </div>
+
+        <div class="contact-section">
+            <h2 class="contact-title">Ready to Order?</h2>
+            <p class="contact-subtitle">Contact us for quotes, bulk orders, or custom requirements</p>
+            <a href="{{ url_for('contact') }}" class="contact-btn">Contact Us Now</a>
+        </div>
+    </div>
+
+    <!-- Lightbox for fullscreen image viewing -->
+    <div id="lightbox" class="lightbox">
+        <div class="lightbox-content">
+            <button class="lightbox-close" onclick="closeLightbox()">×</button>
+            <img id="lightbox-image" class="lightbox-image" src="" alt="">
+            {% if product.images and product.images|length > 1 %}
+            <button class="lightbox-nav prev" onclick="lightboxChangeImage(-1)">‹</button>
+            <button class="lightbox-nav next" onclick="lightboxChangeImage(1)">›</button>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Image gallery variables
+        let currentImageIndex = 0;
+        let autoRotateInterval = null;
+        let isAutoRotating = false;
+        
+        // Get all image URLs
+        const imageUrls = [
+            {% if product.images and product.images|length > 0 %}
+                {% for image in product.images %}
+                    "{{ url_for('static', filename='images/' ~ image) }}"{% if not loop.last %},{% endif %}
+                {% endfor %}
+            {% else %}
+                "{{ url_for('static', filename='images/' ~ product.image) }}"
+            {% endif %}
+        ];
+
+        // Image gallery functionality
+        function goToImage(index) {
+            if (index < 0 || index >= imageUrls.length) return;
+            
+            currentImageIndex = index;
+            const imageSrc = imageUrls[index];
+            
+            // Update main image
+            document.getElementById('main-image').src = imageSrc;
+            
+            // Update active thumbnail
+            const thumbnails = document.querySelectorAll('.thumbnail');
+            const indicators = document.querySelectorAll('.indicator-dot');
+            
+            thumbnails.forEach((thumb, i) => {
+                thumb.classList.toggle('active', i === index);
+            });
+            
+            indicators.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+        }
+        
+        function changeImage(direction) {
+            const newIndex = currentImageIndex + direction;
+            if (newIndex >= 0 && newIndex < imageUrls.length) {
+                goToImage(newIndex);
+            }
+        }
+        
+        // Auto-rotate functionality
+        function toggleAutoRotate() {
+            const btn = document.getElementById('auto-rotate-btn');
+            const text = document.getElementById('auto-rotate-text');
+            
+            if (isAutoRotating) {
+                clearInterval(autoRotateInterval);
+                isAutoRotating = false;
+                btn.classList.remove('active');
+                text.textContent = '▶ Auto Rotate';
+            } else {
+                autoRotateInterval = setInterval(() => {
+                    const nextIndex = (currentImageIndex + 1) % imageUrls.length;
+                    goToImage(nextIndex);
+                }, 3000); // Change image every 3 seconds
+                
+                isAutoRotating = true;
+                btn.classList.add('active');
+                text.textContent = '⏸ Stop Rotate';
+            }
+        }
+        
+        // Image zoom functionality
+        function toggleZoom(imageElement) {
+            imageElement.classList.toggle('zoomed');
+        }
+        
+        // Lightbox functionality
+        function openLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImage = document.getElementById('lightbox-image');
+            
+            lightboxImage.src = imageUrls[currentImageIndex];
+            lightbox.classList.add('active');
+            
+            // Disable body scroll
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            
+            // Re-enable body scroll
+            document.body.style.overflow = 'auto';
+        }
+        
+        function lightboxChangeImage(direction) {
+            const newIndex = currentImageIndex + direction;
+            if (newIndex >= 0 && newIndex < imageUrls.length) {
+                currentImageIndex = newIndex;
+                document.getElementById('lightbox-image').src = imageUrls[currentImageIndex];
+                
+                // Update main gallery to match
+                goToImage(currentImageIndex);
+            }
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            const lightbox = document.getElementById('lightbox');
+            
+            if (lightbox.classList.contains('active')) {
+                switch(e.key) {
+                    case 'Escape':
+                        closeLightbox();
+                        break;
+                    case 'ArrowLeft':
+                        lightboxChangeImage(-1);
+                        break;
+                    case 'ArrowRight':
+                        lightboxChangeImage(1);
+                        break;
+                }
+            } else if (imageUrls.length > 1) {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        changeImage(-1);
+                        break;
+                    case 'ArrowRight':
+                        changeImage(1);
+                        break;
+                }
+            }
+        });
+        
+        // Close lightbox when clicking outside the image
+        document.getElementById('lightbox').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeLightbox();
+            }
+        });
+
+        const basePrice = {{ product.price|default(0)|float }};
+        const productWeight = {{ product.weight }};
+        
+        // Bulk Discount Tiers
+        const discountTiers = [
+            { min: 1, max: 19, discount: 0.02, label: "2% bulk discount" },
+            { min: 20, max: 49, discount: 0.05, label: "5% bulk discount" },
+            { min: 50, max: 99, discount: 0.08, label: "8% bulk discount" },
+            { min: 100, max: 199, discount: 0.12, label: "12% bulk discount" },
+            { min: 200, max: 499, discount: 0.20, label: "20% bulk discount" },
+            { min: 500, max: Infinity, discount: 0.25, label: "25% bulk discount" }
+        ];
+        
+        // Calculate total price based on selected specifications
+        function calculateTotalPrice() {
+            let unitPrice = basePrice;
+            
+            // Get all specification radio buttons
+            const specInputs = document.querySelectorAll('.product-specifications input[type="radio"]:checked');
+            
+            specInputs.forEach(input => {
+                const priceModifier = parseFloat(input.getAttribute('data-price')) || 0;
+                unitPrice += priceModifier;
+            });
+            
+            // Update the displayed price
+            document.getElementById('total-price').textContent = unitPrice.toFixed(2);
+            document.getElementById('unit-price').textContent = unitPrice.toFixed(2);
+            
+            // Trigger full calculation
+            calculateAll();
+        }
+        
+        // Calculate total weight based on selected specifications
+        function calculateTotalWeight() {
+            const baseWeight = {{ product.weight }};
+            let unitWeight = baseWeight;
+            
+            // Get all specification radio buttons
+            const specInputs = document.querySelectorAll('.product-specifications input[type="radio"]:checked');
+            
+            specInputs.forEach(input => {
+                const weightModifier = parseFloat(input.getAttribute('data-weight')) || 0;
+                unitWeight += weightModifier;
+            });
+            
+            return unitWeight;
+        }
+        
+        // Calculate bulk discount
+        function getBulkDiscount(quantity) {
+            for (let tier of discountTiers) {
+                if (quantity >= tier.min && quantity <= tier.max) {
+                    return tier;
+                }
+            }
+            return { discount: 0, label: "" };
+        }
+        
+        // Change quantity with buttons
+        function changeQuantity(delta) {
+            const quantityInput = document.getElementById('quantity');
+            const currentValue = parseInt(quantityInput.value) || 1;
+            const newValue = Math.max(1, Math.min({{ product.stock }}, currentValue + delta));
+            quantityInput.value = newValue;
+            calculateAll();
+        }
+        
+        // Calculate all pricing
+        function calculateAll() {
+            const quantity = parseInt(document.getElementById('quantity').value) || 1;
+            const unitPrice = parseFloat(document.getElementById('unit-price').textContent) || basePrice;
+            
+            // Calculate subtotal
+            const subtotal = unitPrice * quantity;
+            
+            // Calculate discount
+            const discountTier = getBulkDiscount(quantity);
+            const discountAmount = subtotal * discountTier.discount;
+            const finalTotal = subtotal - discountAmount;
+            
+            // Update display
+            document.getElementById('display-quantity').textContent = quantity;
+            document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+            document.getElementById('final-total').textContent = finalTotal.toFixed(2);
+            
+            // Show/hide discount
+            const discountDisplay = document.getElementById('discount-display');
+            const discountRow = document.getElementById('discount-row');
+            
+            if (discountTier.discount > 0) {
+                discountDisplay.style.display = 'block';
+                discountDisplay.querySelector('#discount-text').textContent = discountTier.label;
+                discountRow.style.display = 'flex';
+                document.getElementById('discount-percentage').textContent = (discountTier.discount * 100).toFixed(0);
+                document.getElementById('discount-amount').textContent = discountAmount.toFixed(2);
+            } else {
+                discountDisplay.style.display = 'none';
+                discountRow.style.display = 'none';
+            }
+            
+            // Update shipping calculation if country is selected
+            const country = document.getElementById('country-select').value;
+            if (country) {
+                // Disable add to cart while recalculating shipping
+                disableAddToCartButton();
+                calculateShipping();
+            }
+        }
+        
+        // Select shipping method
+        function selectShippingMethod(method) {
+            document.getElementById('air-shipping').checked = (method === 'air');
+            document.getElementById('sea-shipping').checked = (method === 'sea');
+            
+            // Update visual selection
+            document.querySelectorAll('.shipping-method-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            document.querySelector(`input[value="${method}"]`).closest('.shipping-method-option').classList.add('selected');
+            
+            // Recalculate shipping
+            calculateShipping();
+        }
+        
+        // Enable Add to Cart button when shipping is calculated
+        function enableAddToCartButton() {
+            const addToCartBtn = document.getElementById('add-to-cart-btn');
+            const shippingMessage = document.getElementById('shipping-required-message');
+            
+            if ({{ product.stock }} > 0) {
+                addToCartBtn.disabled = false;
+                addToCartBtn.innerHTML = '🛒 Add to Cart';
+                if (shippingMessage) {
+                    shippingMessage.style.display = 'none';
+                }
+            }
+        }
+        
+        // Disable Add to Cart button when shipping is not selected
+        function disableAddToCartButton() {
+            const addToCartBtn = document.getElementById('add-to-cart-btn');
+            const shippingMessage = document.getElementById('shipping-required-message');
+            
+            if ({{ product.stock }} > 0) {
+                addToCartBtn.disabled = true;
+                addToCartBtn.innerHTML = '🛒 Select Shipping First';
+                if (shippingMessage) {
+                    shippingMessage.style.display = 'block';
+                }
+            }
+        }
+        
+        // Add to Cart functionality
+        function addToCart() {
+            console.log('addToCart() function called');
+            
+            try {
+                const quantity = parseInt(document.getElementById('quantity').value) || 1;
+                const cartBtn = document.getElementById('add-to-cart-btn');
+                const cartMessage = document.getElementById('cart-message');
+                
+                console.log('Quantity:', quantity);
+                console.log('Button element:', cartBtn);
+                console.log('Message element:', cartMessage);
+                
+                if (!cartBtn || !cartMessage) {
+                    console.error('Required elements not found');
+                    return;
+                }
+                
+                // Collect selected specifications
+                const specifications = {};
+                try {
+                    document.querySelectorAll('.spec-category').forEach(specSection => {
+                        const categoryElement = specSection.querySelector('.spec-category-label');
+                        const selectedOption = specSection.querySelector('input[type="radio"]:checked');
+                        if (categoryElement && selectedOption) {
+                            const category = categoryElement.textContent.replace(':', '').trim();
+                            const optionText = selectedOption.nextElementSibling.querySelector('.spec-option-text').textContent.trim();
+                            // Remove price and weight modifier text to get clean option name
+                            const cleanOptionText = optionText.split('(')[0].trim();
+                            specifications[category] = cleanOptionText;
+                        }
+                    });
+                } catch (specError) {
+                    console.warn('Error collecting specifications:', specError);
+                }
+                
+                console.log('Specifications:', specifications);
+                
+                // Disable button and show loading
+                cartBtn.disabled = true;
+                cartBtn.innerHTML = '⏳ Adding...';
+                
+                console.log('Sending AJAX request to /add-to-cart');
+                
+                // Get shipping information
+                const country = document.getElementById('country-select').value;
+                const selectedShippingMethod = document.querySelector('input[name="shipping_method"]:checked')?.value || 'air';
+                const selectedShippingOption = document.querySelector('.shipping-option.selected');
+                let shippingCost = 0;
+                
+                if (selectedShippingOption) {
+                    const costText = selectedShippingOption.querySelector('.shipping-cost').textContent;
+                    shippingCost = parseFloat(costText.replace('$', '')) || 0;
+                }
+                
+                const requestData = {
+                    category_folder: '{{ category.folder }}',
+                    product_slug: '{{ product_slug }}',
+                    quantity: quantity,
+                    specifications: specifications,
+                    shipping: {
+                        country: country,
+                        method: selectedShippingMethod,
+                        cost: shippingCost
+                    }
+                };
+                
+                console.log('Request data:', requestData);
+                
+                // Send AJAX request
+                fetch('/add-to-cart', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                })
+            .then(response => {
+                console.log('Fetch response:', response);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Response data:', data);
+                if (data.success) {
+                    // Show success message with more prominent styling
+                    cartMessage.className = 'cart-message success';
+                    cartMessage.innerHTML = `✅ ${data.message}`;
+                    cartMessage.style.display = 'block';
+                    
+                    // Update cart count in navbar with animation
+                    const cartCount = document.querySelector('.cart-count');
+                    if (cartCount) {
+                        cartCount.textContent = data.cart_count;
+                        cartCount.style.animation = 'pulse 0.6s ease-in-out';
+                        console.log('Updated cart count to:', data.cart_count);
+                        
+                        // Remove animation after it completes
+                        setTimeout(() => {
+                            cartCount.style.animation = '';
+                        }, 600);
+                    } else {
+                        console.warn('Cart count element not found');
+                    }
+                    
+                    // Flash the add to cart button to show success
+                    cartBtn.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
+                    cartBtn.innerHTML = '✅ Added to Cart!';
+                    
+                    // Reset button after 2 seconds
+                    setTimeout(() => {
+                        cartBtn.disabled = false;
+                        cartBtn.innerHTML = '🛒 Add to Cart';
+                        cartBtn.style.background = ''; // Reset to original styling
+                    }, 2000);
+                    
+                    // Hide message after 4 seconds (longer for better visibility)
+                    setTimeout(() => {
+                        cartMessage.style.display = 'none';
+                    }, 4000);
+                } else {
+                    throw new Error(data.message || 'Unknown error');
+                }
+            })
+            .catch(error => {
+                console.error('Add to cart error:', error);
+                // Show error message
+                cartMessage.className = 'cart-message error';
+                cartMessage.innerHTML = `❌ Error: ${error.message}`;
+                cartMessage.style.display = 'block';
+                
+                // Reset button
+                cartBtn.disabled = false;
+                cartBtn.innerHTML = '🛒 Add to Cart';
+            });
+            
+            } catch (outerError) {
+                console.error('Outer function error:', outerError);
+                alert('JavaScript error: ' + outerError.message);
+            }
+        }
+        
+        // Add event listeners to all specification radio buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            const specInputs = document.querySelectorAll('.product-specifications input[type="radio"]');
+            specInputs.forEach(input => {
+                input.addEventListener('change', calculateTotalPrice);
+            });
+            
+            // Initialize
+            calculateTotalPrice();
+            calculateAll();
+        });
+
+        // Enhanced shipping calculator with quantity and method support
+        function calculateShipping() {
+            const country = document.getElementById('country-select').value.trim();
+            const quantity = parseInt(document.getElementById('quantity').value) || 1;
+            const unitWeight = calculateTotalWeight();
+            const totalWeight = unitWeight * quantity;
+            const selectedMethod = document.querySelector('input[name="shipping-method"]:checked')?.value || 'air';
+            const resultDiv = document.getElementById('shipping-result');
+            
+            if (!country) {
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = '<strong style="color: #dc3545;">Please select a country.</strong>';
+                return;
+            }
+            
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<div style="color: #007bff;">Calculating shipping options...</div>';
+            
+            // Calculate both air and sea shipping
+            const promises = [
+                fetch(`/shipping-info/${encodeURIComponent(country)}?weight=${totalWeight}&method=air&quantity=${quantity}`).then(r => r.json()),
+                fetch(`/shipping-info/${encodeURIComponent(country)}?weight=${totalWeight}&method=sea&quantity=${quantity}`).then(r => r.json())
+            ];
+            
+            Promise.all(promises)
+                .then(([airData, seaData]) => {
+                    if (airData.allowed) {
+                        let resultHTML = `
+                            <div class="shipping-options">
+                                <strong>Shipping to ${airData.country} (${quantity} items, ${totalWeight.toFixed(2)}kg total):</strong><br><br>
+                                
+                                <div class="shipping-option ${selectedMethod === 'air' ? 'selected' : ''}" data-method="air">
+                                    <div class="shipping-method-header">
+                                        <span class="method-icon">✈️</span>
+                                        <strong>Air Shipping</strong>
+                                        <span class="delivery-time">(5-7 business days)</span>
+                                    </div>
+                                    <div class="shipping-cost">$${airData.shipping_cost}</div>
+                                    <small class="calculation-details">${airData.calculation}</small>
+                                </div>
+                        `;
+                        
+                        if (seaData.allowed && quantity >= 500) {
+                            const savingsPercentage = Math.round((airData.shipping_cost - seaData.shipping_cost) / airData.shipping_cost * 100);
+                            const savingsBadge = quantity >= 1000 ? `<span class="savings-badge">Save ${savingsPercentage}%!</span>` : `<span class="savings-badge">Save ${savingsPercentage}%</span>`;
+                            
+                            resultHTML += `
+                                <div class="shipping-option ${selectedMethod === 'sea' ? 'selected' : ''}" data-method="sea">
+                                    <div class="shipping-method-header">
+                                        <span class="method-icon">🚢</span>
+                                        <strong>Sea Shipping</strong>
+                                        <span class="delivery-time">(30-60 business days depending upon distance)</span>
+                                        ${savingsBadge}
+                                    </div>
+                                    <div class="shipping-cost">$${seaData.shipping_cost}</div>
+                                    <small class="calculation-details">${seaData.calculation}</small>
+                                </div>
+                            `;
+                        } else if (quantity < 500) {
+                            resultHTML += `
+                                <div class="shipping-option disabled">
+                                    <div class="shipping-method-header">
+                                        <span class="method-icon">🚢</span>
+                                        <strong>Sea Shipping</strong>
+                                        <span class="delivery-time">(Available for 500+ items)</span>
+                                    </div>
+                                    <div class="shipping-cost">Not available</div>
+                                    <small class="calculation-details">Minimum quantity: 500 pieces</small>
+                                </div>
+                            `;
+                        }
+                        
+                        resultHTML += '</div>';
+                        resultDiv.innerHTML = resultHTML;
+                        
+                        // Enable Add to Cart button since shipping is now calculated
+                        enableAddToCartButton();
+                        
+                        // Suggest sea shipping for quantities >= 1000 but don't force it
+                        if (quantity >= 1000 && seaData.allowed) {
+                            // Add a suggestion message instead of auto-selecting
+                            const suggestionDiv = document.createElement('div');
+                            suggestionDiv.innerHTML = `
+                                <div style="background: #e7f3ff; border: 1px solid #b3d9ff; padding: 12px; margin: 15px 0; border-radius: 6px; font-size: 0.9rem;">
+                                    💡 <strong>Recommendation:</strong> For orders of ${quantity} pieces, sea shipping costs only $${seaData.shipping_cost} 
+                                    compared to $${airData.shipping_cost} for air shipping. Consider sea shipping to save ${((airData.shipping_cost - seaData.shipping_cost) / airData.shipping_cost * 100).toFixed(0)}%!
+                                </div>
+                            `;
+                            resultDiv.appendChild(suggestionDiv);
+                        }
+                        
+                        // Add click handlers for shipping options
+                        document.querySelectorAll('.shipping-option:not(.disabled)').forEach(option => {
+                            option.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                const method = this.getAttribute('data-method');
+                                console.log('Shipping option clicked:', method);
+                                
+                                // Update radio buttons
+                                document.getElementById('air-shipping').checked = (method === 'air');
+                                document.getElementById('sea-shipping').checked = (method === 'sea');
+                                
+                                // Update selected visual state
+                                document.querySelectorAll('.shipping-option').forEach(opt => opt.classList.remove('selected'));
+                                this.classList.add('selected');
+                            });
+                        });
+                        
+                    } else {
+                        resultDiv.innerHTML = `
+                            <strong style="color: #dc3545;">${airData.message}</strong>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Shipping calculation error:', error);
+                    resultDiv.innerHTML = '<strong style="color: #dc3545;">Error calculating shipping. Please try again.</strong>';
+                });
+        }
+        
+        // Auto-calculate when country is selected
+        document.addEventListener('DOMContentLoaded', function() {
+            const countrySelect = document.getElementById('country-select');
+            if (countrySelect) {
+                countrySelect.addEventListener('change', function() {
+                    if (this.value) {
+                        calculateShipping();
+                    }
+                });
+            }
+        });
+    </script>
+
+    {% include 'footer.html' %}
+</body>
+</html>

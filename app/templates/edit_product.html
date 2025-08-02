@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Product - QualClamps Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        .current-image {
+            max-width: 200px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .current-images-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .current-image-item {
+            position: relative;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 5px;
+            background: white;
+            display: inline-block;
+            margin: 10px;
+        }
+        .current-image-item img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 4px;
+            display: block;
+        }
+        .image-controls {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 3px;
+            text-align: center;
+            border-radius: 0 0 4px 4px;
+        }
+        .remove-image-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 3px 6px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 10px;
+            transition: background-color 0.3s ease;
+        }
+        .remove-image-btn:hover {
+            background: #c82333;
+        }
+        .image-upload-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+        }
+        .image-upload-section h4 {
+            margin-top: 0;
+            color: #495057;
+        }
+        .image-upload-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+        }
+        .remove-image-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .remove-image-btn:hover {
+            background: #c82333;
+        }
+        .add-image-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .add-image-btn:hover {
+            background: #218838;
+        }
+        .specifications-section {
+            border: 2px solid #e9ecef;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+        }
+        .specifications-section h3 {
+            margin-top: 0;
+            color: #495057;
+        }
+        .specification-group {
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            background-color: white;
+        }
+        .spec-header {
+            margin-bottom: 15px;
+        }
+        .spec-header input {
+            font-weight: bold;
+        }
+        .spec-option {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .spec-option input {
+            flex: 1;
+        }
+        .add-option, .remove-option, .remove-spec, #add-specification {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .remove-option, .remove-spec {
+            background-color: #dc3545;
+        }
+        .add-option:hover, #add-specification:hover {
+            background-color: #0056b3;
+        }
+        .remove-option:hover, .remove-spec:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    
+    <div class="container">
+        <h1>Edit Product in {{ folder.title() }}</h1>
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div style="background: #d4edda; color: #155724; padding: 10px; border-radius: 4px; margin-bottom: 20px;">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <form method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="name">Product Name*</label>
+                <input type="text" id="name" name="name" value="{{ product.name }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description*</label>
+                <textarea id="description" name="description" required>{{ product.description }}</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="oem">OEM Number</label>
+                <input type="text" id="oem" name="oem" value="{{ product.oem or '' }}">
+            </div>
+            
+            <div class="form-group">
+                <label for="weight">Weight (kg)*</label>
+                <input type="number" id="weight" name="weight" step="0.001" min="0.001" value="{{ product.weight }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="price">Price (USD)*</label>
+                <input type="number" id="price" name="price" step="0.01" min="0" value="{{ product.price|default(0) }}" required>
+                <small>This is the base price. Additional specifications can add to this price.</small>
+            </div>
+            
+            <!-- Product Specifications Section -->
+            <div class="specifications-section">
+                <h3>Product Specifications & Pricing</h3>
+                <p>Edit specifications that customers can choose from.</p>
+                
+                <div id="specifications-container">
+                    {% if product.specifications %}
+                        {% for spec in product.specifications %}
+                        {% set outer_loop = loop %}
+                        <div class="specification-group">
+                            <div class="spec-header">
+                                <label>Specification Category:</label>
+                                <input type="text" name="spec_categories[]" value="{{ spec.category }}" placeholder="e.g., Size, Material, Finish" />
+                            </div>
+                            <div class="spec-options">
+                                {% for option in spec.options %}
+                                <div class="spec-option">
+                                    <input type="text" name="spec_options[{{ outer_loop.index0 }}][]" value="{{ option.name }}" placeholder="Option name" />
+                                    <input type="number" name="spec_prices[{{ outer_loop.index0 }}][]" value="{{ option.price_modifier }}" step="0.01" placeholder="Price modifier (+/-)" />
+                                    <input type="number" name="spec_weights[{{ outer_loop.index0 }}][]" value="{{ option.weight_modifier|default(0) }}" step="0.001" placeholder="Weight modifier in kg (+/-)" />
+                                    <button type="button" class="remove-option">Remove</button>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <button type="button" class="add-option" data-spec-index="{{ outer_loop.index0 }}">Add Option</button>
+                            <button type="button" class="remove-spec">Remove Category</button>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="specification-group">
+                            <div class="spec-header">
+                                <label>Specification Category:</label>
+                                <input type="text" name="spec_categories[]" placeholder="e.g., Size, Material, Finish" />
+                            </div>
+                            <div class="spec-options">
+                                <div class="spec-option">
+                                    <input type="text" name="spec_options[0][]" placeholder="Option name" />
+                                    <input type="number" name="spec_prices[0][]" step="0.01" placeholder="Price modifier (+/-)" />
+                                    <input type="number" name="spec_weights[0][]" step="0.001" placeholder="Weight modifier in kg (+/-)" />
+                                    <button type="button" class="remove-option">Remove</button>
+                                </div>
+                            </div>
+                            <button type="button" class="add-option" data-spec-index="0">Add Option</button>
+                            <button type="button" class="remove-spec">Remove Category</button>
+                        </div>
+                    {% endif %}
+                </div>
+                <button type="button" id="add-specification">Add Specification Category</button>
+            </div>
+            
+            <div class="form-group">
+                <label for="stock">Stock Quantity*</label>
+                <input type="number" id="stock" name="stock" min="0" value="{{ product.stock }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Current Product Images</label>
+                {% if product.images and product.images|length > 0 %}
+                    <div class="current-images-gallery">
+                        {% for image in product.images %}
+                        <div class="current-image-item" data-image="{{ image }}">
+                            <img src="{{ url_for('static', filename='images/' ~ image) }}" alt="Product image {{ loop.index }}">
+                            <div class="image-controls">
+                                <button type="button" class="remove-image-btn" onclick="removeImage('{{ image }}', this.parentElement.parentElement)">
+                                    ❌ Remove
+                                </button>
+                            </div>
+                            <!-- Hidden input to keep track of remaining images -->
+                            <input type="hidden" name="keep_images[]" value="{{ image }}">
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% elif product.image %}
+                    <div class="current-images-gallery">
+                        <div class="current-image-item" data-image="{{ product.image }}">
+                            <img src="{{ url_for('static', filename='images/' ~ product.image) }}" alt="Current product image">
+                            <div class="image-controls">
+                                <button type="button" class="remove-image-btn" onclick="removeImage('{{ product.image }}', this.parentElement.parentElement)">
+                                    ❌ Remove
+                                </button>
+                            </div>
+                            <!-- Hidden input to keep track of remaining images -->
+                            <input type="hidden" name="keep_images[]" value="{{ product.image }}">
+                        </div>
+                    </div>
+                {% else %}
+                    <p>No images currently uploaded.</p>
+                {% endif %}
+                
+                <div class="image-upload-section">
+                    <h4>Add New Images</h4>
+                    <div id="image-uploads">
+                        <div class="image-upload-item">
+                            <label>Add Product Image:</label>
+                            <input type="file" name="images[]" accept="image/*">
+                        </div>
+                    </div>
+                    <button type="button" id="add-image" class="add-image-btn">Add Another Image</button>
+                    <small style="display: block; margin-top: 10px; color: #666;">
+                        New images will be added to existing ones. Use the "Remove" button above to delete specific images.
+                    </small>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <button type="submit" class="btn">Update Product</button>
+                <a href="{{ url_for('manage_category', folder=folder) }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+    
+    {% include 'footer.html' %}
+
+    <script>
+        let specIndex = {{ product.specifications|length if product.specifications else 1 }};
+
+        // Add new specification category
+        document.getElementById('add-specification').addEventListener('click', function() {
+            const container = document.getElementById('specifications-container');
+            const newSpec = document.createElement('div');
+            newSpec.className = 'specification-group';
+            newSpec.innerHTML = `
+                <div class="spec-header">
+                    <label>Specification Category:</label>
+                    <input type="text" name="spec_categories[]" placeholder="e.g., Size, Material, Finish" />
+                </div>
+                <div class="spec-options">
+                    <div class="spec-option">
+                        <input type="text" name="spec_options[${specIndex}][]" placeholder="Option name" />
+                        <input type="number" name="spec_prices[${specIndex}][]" step="0.01" placeholder="Price modifier (+/-)" />
+                        <input type="number" name="spec_weights[${specIndex}][]" step="0.001" placeholder="Weight modifier in kg (+/-)" />
+                        <button type="button" class="remove-option">Remove</button>
+                    </div>
+                </div>
+                <button type="button" class="add-option" data-spec-index="${specIndex}">Add Option</button>
+                <button type="button" class="remove-spec">Remove Category</button>
+            `;
+            container.appendChild(newSpec);
+            specIndex++;
+            
+            // Update all specification indices to be sequential
+            updateSpecificationIndices();
+        });
+
+        // Function to update all specification indices to be sequential
+        function updateSpecificationIndices() {
+            const specGroups = document.querySelectorAll('.specification-group');
+            specGroups.forEach((group, index) => {
+                // Update all inputs and buttons in this group to use the correct index
+                group.querySelectorAll('input[name^="spec_options["]').forEach(input => {
+                    input.name = `spec_options[${index}][]`;
+                });
+                group.querySelectorAll('input[name^="spec_prices["]').forEach(input => {
+                    input.name = `spec_prices[${index}][]`;
+                });
+                group.querySelectorAll('input[name^="spec_weights["]').forEach(input => {
+                    input.name = `spec_weights[${index}][]`;
+                });
+                group.querySelector('.add-option').setAttribute('data-spec-index', index);
+            });
+        }
+
+        // Add new image upload field
+        document.getElementById('add-image').addEventListener('click', function() {
+            const container = document.getElementById('image-uploads');
+            const newImageUpload = document.createElement('div');
+            newImageUpload.className = 'image-upload-item';
+            newImageUpload.innerHTML = `
+                <button type="button" class="remove-image-btn">Remove</button>
+                <label>Additional Image:</label>
+                <input type="file" name="images[]" accept="image/*">
+                <small>Additional product image</small>
+            `;
+            container.appendChild(newImageUpload);
+        });
+
+        // Event delegation for dynamic buttons
+        document.addEventListener('click', function(e) {
+            // Add option to specification
+            if (e.target.classList.contains('add-option')) {
+                const specIndex = e.target.getAttribute('data-spec-index');
+                const optionsContainer = e.target.parentElement.querySelector('.spec-options');
+                const newOption = document.createElement('div');
+                newOption.className = 'spec-option';
+                newOption.innerHTML = `
+                    <input type="text" name="spec_options[${specIndex}][]" placeholder="Option name" />
+                    <input type="number" name="spec_prices[${specIndex}][]" step="0.01" placeholder="Price modifier (+/-)" />
+                    <input type="number" name="spec_weights[${specIndex}][]" step="0.001" placeholder="Weight modifier in kg (+/-)" />
+                    <button type="button" class="remove-option">Remove</button>
+                `;
+                optionsContainer.appendChild(newOption);
+            }
+
+            // Remove option
+            if (e.target.classList.contains('remove-option')) {
+                e.target.parentElement.remove();
+            }
+
+            // Remove specification category
+            if (e.target.classList.contains('remove-spec')) {
+                e.target.parentElement.remove();
+                // Update indices after removing a category
+                updateSpecificationIndices();
+            }
+
+            // Remove image upload
+            if (e.target.classList.contains('remove-image-btn')) {
+                e.target.parentElement.remove();
+            }
+        });
+
+        // Function to remove existing product images
+        function removeImage(imageName, imageElement) {
+            if (confirm('Are you sure you want to remove this image?')) {
+                imageElement.style.opacity = '0.5';
+                imageElement.querySelector('.remove-image-btn').textContent = 'Removed';
+                imageElement.querySelector('.remove-image-btn').disabled = true;
+                
+                // Remove the hidden input to exclude this image from being kept
+                const hiddenInput = imageElement.querySelector('input[name="keep_images[]"]');
+                if (hiddenInput) {
+                    hiddenInput.remove();
+                }
+            }
+        }
+    </script>
+</body>
+</html>
